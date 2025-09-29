@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - RespiraAi</title>
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body>
+  <div class="login-container">
+    <h1>RespiraAi</h1>
+    <form class="login-form" onsubmit="return login(event)">
+      <input type="text" id="user" placeholder="Usuário" required />
+      <input type="password" id="pass" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+      <p id="erro"></p>
+    </form>
+    <p class="cadastro">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+  </div>
+
+  <script>
+    function login(event) {
+      event.preventDefault();
+      const user = document.getElementById("user").value;
+      const pass = document.getElementById("pass").value;
+
+      if (user === "admin" && pass === "1234") {
+        window.location.href = "home.html"; // redireciona
+      } else {
+        document.getElementById("erro").innerText = "Usuário ou senha incorretos!";
+      }
+    }
+  </script>
+</body>
