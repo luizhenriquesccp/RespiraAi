@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+header {
+  background-color: rgb(250, 207, 16);
+  color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.315);
+}
+header h1 {
+  padding: 20px;
+  font-size: 5vw;
+}
+header nav {
+    
+    padding-bottom: 2px;
+}
