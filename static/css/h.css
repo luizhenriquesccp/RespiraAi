@@ -1,0 +1,106 @@
+/* --- ESTILOS GERAIS DE LAYOUT (Histórico, Exercícios, Estatísticas) --- */
+
+/* Estilo do cabeçalho que contém o logo e a navegação */
+.header-respiraai {
+    background-color: #FFD200; /* Fundo amarelo do cabeçalho */
+    display: flex;
+    justify-content: space-between; /* Espaço entre o logo e o menu */
+    align-items: center;
+    padding: 20px 50px; /* Preenchimento nas laterais */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* Estilo do texto do logo */
+.logo-respiraai {
+    font-family: Georgia, serif; /* Fonte mais séria como no design */
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Estilo do menu de navegação */
+.menu-nav a {
+    color: #333;
+    text-decoration: none; /* Remove sublinhado */
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 30px; /* Espaço entre os links */
+    transition: color 0.3s;
+}
+
+.menu-nav a:hover,
+.menu-nav a.active {
+    color: #555; /* Cor um pouco mais escura ao passar o mouse ou ativo */
+    border-bottom: 2px solid #555; /* Linha sutil para o item ativo/hover */
+    padding-bottom: 2px;
+}
+
+/* Estilo do conteúdo principal da página (para alinhar o H1 e a tabela) */
+.historico-main-content {
+    max-width: 900px; /* Largura máxima para centralizar o conteúdo */
+    margin: 50px auto; /* Centraliza na tela e dá espaço do cabeçalho */
+    padding: 0 20px;
+}
+
+/* Título H1 "ÚLTIMAS PRÁTICAS" */
+.historico-main-content h1 {
+    font-family: Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 800; /* Mais negrito */
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* --- ESTILOS DA TABELA DE PRÁTICAS --- */
+
+.tabela-praticas-container {
+    border: 1px solid #ccc; /* Borda da caixa externa da tabela */
+    border-radius: 10px;
+    overflow: hidden; /* Garante que a borda arredondada funcione bem */
+    background-color: #fff; /* Fundo branco para a tabela */
+}
+
+.tabela-praticas {
+    width: 100%;
+    border-collapse: collapse; /* Remove o espaço entre as bordas das células */
+    text-align: center;
+}
+
+/* Cabeçalho da tabela */
+.tabela-praticas th {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: #333;
+    padding: 15px;
+    background-color: #f7f7f7; /* Fundo levemente cinza */
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee; /* Separador vertical */
+}
+
+.tabela-praticas th:last-child {
+    border-right: none; /* Remove a borda direita da última coluna */
+}
+
+/* Linhas da tabela */
+.tabela-praticas td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee; /* Separador vertical */
+    color: #555;
+}
+
+.tabela-praticas td:last-child {
+    border-right: none;
+}
+
+/* Efeito de hover nas linhas */
+.tabela-praticas tbody tr:hover {
+    background-color: #fffbe6; /* Amarelo bem suave ao passar o mouse */
+    cursor: pointer;
+}
+
+/* Remove a borda inferior da última linha */
+.tabela-praticas tbody tr:last-child td {
+    border-bottom: none;
+}
