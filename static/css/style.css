@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #ffeb3b; /* fundo amarelo */
+  background: #ffeb3b; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,7 +31,7 @@ body {
 }
 
 .login-form button {
-  background: #fbc02d; /* botão amarelo */
+  background: #fbc02d; 
   color: black;
   border: none;
   padding: 10px;
@@ -42,7 +42,7 @@ body {
 }
 
 .login-form button:hover {
-  background: #f9a825; /* amarelo mais forte no hover */
+  background: #f9a825; 
 }
 
 .cadastro {

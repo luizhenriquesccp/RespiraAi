@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Respira Aí</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Cadastro</h1>
+        <form class="login-form" id="form-cadastro" autocomplete="off">
+            <input type="text" name="nome" id="nome" placeholder="Nome completo" required>
+            <input type="email" name="email" id="email" placeholder="E-mail" required>
+            <input type="password" name="senha" id="senha" placeholder="Senha" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+        <div class="cadastro">
+            Já tem uma conta? <a href="../templates/login.html">Entrar</a>
+        </div>
+        <div id="mensagem" style="margin-top:10px;color:red;"></div>
+    </div>
+    <script>
+    $(function() {
+        $("#form-cadastro").on("submit", function(e) {
+            e.preventDefault();
+
+            let nome = $("#nome").val().trim();
+            let email = $("#email").val().trim();
+            let senha = $("#senha").val().trim();
+
+            if (nome.length < 3) {
+                $("#mensagem").text("O nome deve ter pelo menos 3 caracteres.");
+                return;
+            }
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                $("#mensagem").text("E-mail inválido.");
+                return;
+            }
+            if (senha.length < 5) {
+                $("#mensagem").text("A senha deve ter pelo menos 5 caracteres.");
+                return;
+            }
+
+            let usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
+
+            if (usuarios.some(u => u.email === email)) {
+                $("#mensagem").text("E-mail já cadastrado.");
+                return;
+            }
+
+            usuarios.push({ nome, email, senha });
+            localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+            $("#mensagem").css("color", "green").text("Cadastro realizado com sucesso!");
+            $("#form-cadastro")[0].reset();
+        });
+    });
+    </script>
+</body>
+</html>
