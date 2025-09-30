@@ -1,64 +1,155 @@
 * {
   margin: 0;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  padding: 0;
+  box-sizing: border-box;
 }
-header {
-  background-color: rgb(250, 207, 16);
-  color: black;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.315);
+body {
+  background: #fff;
+  min-height: 100vh;
 }
-header h1 {
-  padding: 20px;
-  font-size: 5vw;
+.nav-bar {
+  background: #ffeb3b;
+  color: #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 60px;
+  height: 90px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
-header nav {
-
-    padding-bottom: 2px;
+.nav-bar h1 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 3.2em;
+  font-weight: normal;
+  letter-spacing: 1px;
 }
-
-.portfolio {
-  background-color: #f0db1f;
-  margin-top: 10vh;
-  flex-wrap: wrap;
-  text-align: center;
-  justify-content: center;
+.nav-bar .menu-links a {
+  margin-left: 36px;
+  text-decoration: none;
+  color: #222;
+  font-size: 1.6em;
+  font-family: Arial, Helvetica, sans-serif;
+  transition: color 0.2s;
+}
+.nav-bar .menu-links a:hover {
+  color: #e4b827;
+  text-decoration: underline;
+}
+.hero {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  min-height: 250px;
+  max-height: 200vh;
+}
+.hero h2 {
+  font-size: 2.5em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  margin: 20px;
+  color: #222;
+}
+.hero p {
+  font-size: 1.2em;
+  margin: 12px;
+  color: #222;
 }
 .cards {
-  display: inline-block;
-  vertical-align: top;
-  width: 220px;
-  height: 300px;
-  margin: 10px;
-  background-color: #f0f0f0;
-  border-radius: 15px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-  overflow: hidden;
+  margin-top: 36px;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.cards img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-}
-.cards h4{
-  margin: 12px 0 8px 0;
-  font-size: 1.2em;
-  color: #333;
+.cards h4 {
+  font-size: 1.3em;
+  margin-bottom: 8px;
+  color: #222;
+  font-weight: bold;
 }
 .cards p {
-  margin: 0 12px 12px 12px;
-  font-size: 0.9em;
-  color: #000000;
-}
-.cards:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
+  font-size: 1em;
+  margin-bottom: 18px;
+  color: #222;
 }
 .act {
-  background-color: #f0dcd2;
-  padding: 10px 20px;
-  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  border: none;
+  padding: 12px 36px;
+  border-radius: 30px;
+  font-size: 1.2em;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 .act:hover {
-  background-color: #e4b827;
+  background: #e4b827;
+  color: #fff;
+}
+@media (max-width: 700px) {
+  .nav-bar {
+    flex-direction: column;
+    height: auto;
+    padding: 20px 10px;
+  }
+  .hero {
+    max-width: 95vw;
+    padding: 24px 8vw;
+  }
+}
+.historico-main-content {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+.historico-main-content h1 {
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 30px;
+}
+.tabela-praticas-container {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #fff;
+}
+.tabela-praticas {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+.tabela-praticas th {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  color: #333;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #eee;
+}
+.tabela-praticas th:last-child {
+  border-right: none;
+}
+.tabela-praticas td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #eee;
+  color: #555;
+}
+.tabela-praticas td:last-child {
+  border-right: none;
+}
+.tabela-praticas tbody tr:hover {
+  background-color: #fffbe6;
   cursor: pointer;
+}
+.tabela-praticas tbody tr:last-child td {
+  border-bottom: none;
 }
