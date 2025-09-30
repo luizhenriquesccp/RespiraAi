@@ -3,40 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exercícios - RespiraAi</title>
+  <title>Respiração Diafragmática - RespiraAi</title>
   <link rel="stylesheet" href="../static/css/styles.css" />
   <style>
-    body {
-      background: #fff;
-      min-height: 100vh;
-    }
-    .nav-bar {
-      background: #ffeb3b;
-      color: #000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 60px;
-      height: 90px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-    }
-    .nav-bar h1 {
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 3.2em;
-      font-weight: normal;
-      letter-spacing: 1px;
-    }
-    .nav-bar .menu-links a {
-      margin-left: 36px;
-      text-decoration: none;
-      color: #222;
-      font-size: 1.6em;
-      font-family: Arial, Helvetica, sans-serif;
-      transition: color 0.2s;
-    }
-    .nav-bar .menu-links a:hover {
-      color: #e4b827;
-      text-decoration: underline;
+    .descricao-ex {
+      margin-bottom: 24px;
+      font-size: 1.2em;
+      color: #333;
+      background: #fffde7;
+      border-radius: 16px;
+      padding: 18px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      max-width: 480px;
+      text-align: left;
     }
     .ex-box {
       margin: 48px auto 0 auto;
@@ -142,10 +121,7 @@
         padding: 14px 0;
         font-size: 1em;
       }
-      .instruction {
-        margin-top: 140px;
-        font-size: 1.1rem;
-      }
+      
     }
   </style>
 </head>
@@ -154,14 +130,20 @@
     <nav class="nav-bar">
       <h1>RespiraAi</h1>
       <div class="menu-links">
-        <a href="#">Exercícios</a>
-        <a href="#">Histórico</a>
-        <a href="#">Estatísticas</a>
+        <a href="index.html">Exercícios</a>
+        <a href="h.html">Histórico</a>
+        <a href="estatisticas.html">Estatísticas</a>
       </div>
     </nav>
   </header>
   <main>
     <div class="ex-box">
+      <div class="descricao-ex">
+        <strong>Respiração Diafragmática (ou abdominal)</strong><br><br>
+        Inspire pelo nariz enchendo o abdômen.<br>
+        Expire lentamente pela boca, esvaziando a barriga.<br>
+        <em>Foco: relaxamento profundo.</em>
+      </div>
       <div style="position:relative;">
         <div class="circle" id="breathCircle"></div>
       </div>
