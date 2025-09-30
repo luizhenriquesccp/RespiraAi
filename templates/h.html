@@ -1,71 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<link rel="stylesheet" href="style.css">
-<body>
-    
-</body>
-</html>
-<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico - RespiraAi</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/historico.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RespiraAi</title>
+  <link rel="stylesheet" href="../static/css/styles.css" />
 </head>
 <body>
-    <header class="header-respiraai">
-        <div class="logo-respiraai">RespiraAi</div>
-        <nav class="menu-nav">
-            <a href="exercicios.html">Exercícios</a>
-            <a href="historico.html" class="active">Histórico</a>
-            <a href="estatisticas.html">Estatísticas</a>
-        </nav>
-    </header>
+  <header>
+    <nav class="nav-bar">
+      <h1>RespiraAi</h1>
+      <div class="menu-links">
+        <a href="index.html">Exercícios</a>
+        <a href="h.html">Histórico</a>
+        <a href="estatisticas.html">Estatísticas</a>
+      </div>
+    </nav>
+  </header>
+
 
     <main class="historico-main-content">
-        <h1>ÚLTIMAS PRÁTICAS</h1>
+      <h1>ÚLTIMAS PRÁTICAS</h1>
 
-        <div class="tabela-praticas-container">
-            <table class="tabela-praticas">
-                <thead>
-                    <tr>
-                        <th>DATA</th>
-                        <th>EXERCÍCIOS</th>
-                        <th>TEMPO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>25/09/2025</td>
-                        <td>4-7-8</td>
-                        <td>00:05:00</td>
-                    </tr>
-                    <tr>
-                        <td>24/09/2025</td>
-                        <td>Caixa</td>
-                        <td>00:03:30</td>
-                    </tr>
-                    <tr>
-                        <td>23/09/2025</td>
-                        <td>4-7-8</td>
-                        <td>00:06:00</td>
-                    </tr>
-                    <tr>
-                        <td>22/09/2025</td>
-                        <td>Diafragma</td>
-                        <td>00:02:15</td>
-                    </tr>
-                    </tbody>
-            </table>
-        </div>
+      <div class="tabela-praticas-container">
+        <table class="tabela-praticas">
+          <thead>
+            <tr>
+              <th>DATA</th>
+              <th>EXERCÍCIOS</th>
+              <th>TEMPO</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pratica in praticas %}
+            <tr>
+              <td>{{ pratica.data }}</td>
+              <td>{{ pratica.exercicio }}</td>
+              <td>{{ pratica.tempo }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </main>
-
-</body>
+  </body>
 </html>

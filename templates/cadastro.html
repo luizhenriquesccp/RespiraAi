@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="login-container">
-        <h1>Cadastro</h1>
+        <h1>Cadastra-se</h1>
         <form class="login-form" id="form-cadastro" autocomplete="off">
             <input type="text" name="nome" id="nome" placeholder="Nome completo" required>
             <input type="email" name="email" id="email" placeholder="E-mail" required>
@@ -20,42 +20,6 @@
         </div>
         <div id="mensagem" style="margin-top:10px;color:red;"></div>
     </div>
-    <script>
-    $(function() {
-        $("#form-cadastro").on("submit", function(e) {
-            e.preventDefault();
-
-            let nome = $("#nome").val().trim();
-            let email = $("#email").val().trim();
-            let senha = $("#senha").val().trim();
-
-            if (nome.length < 3) {
-                $("#mensagem").text("O nome deve ter pelo menos 3 caracteres.");
-                return;
-            }
-            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                $("#mensagem").text("E-mail inválido.");
-                return;
-            }
-            if (senha.length < 5) {
-                $("#mensagem").text("A senha deve ter pelo menos 5 caracteres.");
-                return;
-            }
-
-            let usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-
-            if (usuarios.some(u => u.email === email)) {
-                $("#mensagem").text("E-mail já cadastrado.");
-                return;
-            }
-
-            usuarios.push({ nome, email, senha });
-            localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-            $("#mensagem").css("color", "green").text("Cadastro realizado com sucesso!");
-            $("#form-cadastro")[0].reset();
-        });
-    });
-    </script>
+    <script src="../static/js/cadastrar.js"></script>
 </body>
 </html>
