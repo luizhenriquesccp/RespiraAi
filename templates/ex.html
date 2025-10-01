@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Respiração Diafragmática - RespiraAi</title>
+  <title>{{ exercicio.nome }} - RespiraAi</title>
   <link rel="stylesheet" href="../static/css/styles.css" />
   <style>
     .descricao-ex {
@@ -33,7 +33,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: breathing 8s infinite;
+      animation: breathing {{ exercicio.duracao|default(8) }}s infinite;
       transition: animation-duration 0.3s;
     }
     @keyframes breathing {
@@ -121,7 +121,6 @@
         padding: 14px 0;
         font-size: 1em;
       }
-      
     }
   </style>
 </head>
@@ -139,10 +138,8 @@
   <main>
     <div class="ex-box">
       <div class="descricao-ex">
-        <strong>Respiração Diafragmática (ou abdominal)</strong><br><br>
-        Inspire pelo nariz enchendo o abdômen.<br>
-        Expire lentamente pela boca, esvaziando a barriga.<br>
-        <em>Foco: relaxamento profundo.</em>
+        <strong>{{ exercicio.nome }}</strong><br><br>
+        {{ exercicio.descricao|safe }}
       </div>
       <div style="position:relative;">
         <div class="circle" id="breathCircle"></div>
