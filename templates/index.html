@@ -1,37 +1,86 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RespiraAi</title>
-  <link rel="stylesheet" href="../static/css/styles.css" />
-</head>
-<body>
-  <header>
-    <nav class="nav-bar">
-      <h1>RespiraAi</h1>
-      <div class="menu-links">
-        <a href="#card">Exercícios</a>
-        <a href="h.html">Histórico</a>
-        <a href="estatisticas.html">Estatísticas</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RespiraAi</title>
+    <link rel="stylesheet" href="../static/css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="nav-bar">
+        <h1>RespiraAi</h1>
+        <div class="menu-links">
+          <a href="#card">Exercícios</a>
+          <a href="h.html">Histórico</a>
+          <a href="estatisticas.html">Estatísticas</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="hero">
+        <h2>Bem-vindo ao RespiraAi!</h2>
+        <p>
+          Aqui você encontra exercícios de respiração, histórico das suas
+          atividades e estatísticas do seu progresso.
+        </p>
+        <p>Use o menu acima para navegar pelo sistema.</p>
       </div>
-    </nav>
-  </header>
-  <main>
-    <div class="hero">
-      <h2>Bem-vindo ao RespiraAi!</h2>
-      <p>
-        Aqui você encontra exercícios de respiração, histórico das suas atividades e estatísticas do seu progresso.
-      </p>
-      <p>
-        Use o menu acima para navegar pelo sistema.
-      </p>
-    </div>
-    <section class="cards" id="card">
+      <section class="cards" id="card">
         <h4>Exercícios</h4>
-        <p>Encontre uma variedade de exercícios de respiração para melhorar seu bem-estar.</p>
+        <p>
+          Encontre uma variedade de exercícios de respiração para melhorar seu
+          bem-estar.
+        </p>
         <a href="ex.html"><button type="button" class="act">COMEÇAR</button></a>
-    </section>
-  </main>
-</body>
+      </section>
+
+      <section class="cards" id="estatisticas">
+        <h4>Estatísticas da Semana</h4>
+        <p id="estatisticasSemana">
+        </p>
+      </section>
+    </main>
+    <script>
+      function salvarPratica(minutos) {
+        const historico = JSON.parse(localStorage.getItem("praticas")) || [];
+        historico.push({
+          minutos: minutos,
+          data: new Date().toISOString(),
+        });
+        localStorage.setItem("praticas", JSON.stringify(historico));
+      }
+
+      function getEstatisticasSemana() {
+        const historico = JSON.parse(localStorage.getItem("praticas")) || [];
+        const agora = new Date();
+        const semanaPassada = new Date();
+        semanaPassada.setDate(agora.getDate() - 7);
+
+        return historico.filter((item) => new Date(item.data) >= semanaPassada);
+      }
+
+      function resumoSemana() {
+        const semana = getEstatisticasSemana();
+        const total = semana.reduce((sum, p) => sum + p.minutos, 0);
+        return {
+          totalMinutos: total,
+          qtdPraticas: semana.length,
+          media: semana.length ? total / semana.length : 0,
+        };
+      }
+
+      // Exibe as estatísticas na página ao carregar
+      document.addEventListener("DOMContentLoaded", function () {
+        const stats = resumoSemana();
+        document.getElementById(
+          "estatisticasSemana"
+        ).innerHTML = `<strong>Total de minutos:</strong> ${
+          stats.totalMinutos
+        }<br>
+       <strong>Práticas realizadas:</strong> ${stats.qtdPraticas}<br>
+       <strong>Média por prática:</strong> ${stats.media.toFixed(1)} min`;
+      });
+    </script>
+  </body>
 </html>
