@@ -33,8 +33,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        animation: breathing {{ exercicio.duracao|default(8) }}s infinite;
-        transition: animation-duration 0.3s;
       }
       @keyframes breathing {
         0%   { transform: scale(1); }
@@ -70,7 +68,7 @@
         font-family: Arial, Helvetica, sans-serif;
         font-weight: normal;
         cursor: pointer;
-        transition: background 0.2s, color 0.2s;
+        transition: 0.2s, color 0.2s;
         box-shadow: none;
       }
       .btn-circular:hover {
