@@ -147,11 +147,16 @@ def lista_exercicios():
         return redirect(url_for('login'))
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM exercicio")
+    cursor.execute("SELECT * FROM exercicio ORDER BY id_exercicio ASC")
     exercicios = cursor.fetchall()
     cursor.close()
     conn.close()
-    return render_template("ex.html", exercicios=exercicios, exercicio={})
+    if exercicios:
+        primeiro_id = exercicios[0]['id_exercicio']
+        return redirect(url_for('exibir_exercicio', id=primeiro_id))
+    else:
+        flash("Nenhum exercício cadastrado.")
+        return render_template("ex.html", exercicios=[], exercicio={})
 
 @app.route("/exercicio/<int:id>")
 def exibir_exercicio(id):

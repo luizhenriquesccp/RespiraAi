@@ -14,10 +14,9 @@
           <a href="#card">Exercícios</a>
           <a href="{{ url_for('historico') }}">Histórico</a>
           <a href="#estatisticas">Estatísticas</a>
-          <a href="{{ url_for('login') }}">LOGIN</a>
           {% if usuario %}
-            <span style="margin-left:20px;color:#333;">
-              Logado como: {{ usuario.nome }} ({{ usuario.email }})
+            <span>
+            {{ usuario.nome }} 
             </span>
             <a href="{{ url_for('logout') }}" style="margin-left:10px;">Sair</a>
           {% endif %}

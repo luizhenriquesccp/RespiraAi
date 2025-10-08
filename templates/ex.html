@@ -175,34 +175,43 @@
         <div class="tempo-total" id="tempoTotal">
           TEMPO TOTAL:&nbsp;&nbsp;00:00
         </div>
-        {% if exercicios %}
-          {% for ex in exercicios %}
-          <div class="cards">
-            <h4>{{ ex.nome }}</h4>
-            <p>Duração: {{ ex.duraçao }} min</p>
-            <a href="{{ url_for('exibir_exercicio', id=ex.id_exercicio) }}" class="btn-escolha">ESCOLHER</a>
-          </div>
-          {% endfor %}
-        {% else %}
-          <div class="cards">
-            <h4>Respiração 4-7-8</h4>
-            <p>Duração: 3 min</p>
-            <a href="{{ url_for('exibir_exercicio', id=1) }}" class="btn-escolha">ESCOLHER</a>
-          </div>
-          <div class="cards">
-            <h4>Respiração Quadrada</h4>
-            <p>Duração: 5 min</p>
-            <a href="{{ url_for('exibir_exercicio', id=2) }}" class="btn-escolha">ESCOLHER</a>
-          </div>
-          <div class="cards">
-            <h4>Respiração Alternada</h4>
-            <p>Duração: 5 min</p>
-            <a href="{{ url_for('exibir_exercicio', id=3) }}" class="btn-escolha">ESCOLHER</a>
-          </div>
-        {% endif %}
+        <hr >
+        <div class="ex-box">
+          <h3>Escolha outro exercício:</h3>
+          {% if exercicios %}
+            <div class="ex-cards-list">
+              {% for ex in exercicios %}
+                {% if ex.id_exercicio != exercicio.id_exercicio %}
+                <div class="ex-card">
+                  <strong>{{ ex.nome }}</strong>
+                  <div class="ex-info">
+                    Duração: {{ ex.duraçao }} min
+                  </div>
+                  <div class="ex-info">
+                    {{ ex.descriçao|truncate(60, True, '...') }}
+                  </div>
+                  <a href="{{ url_for('exibir_exercicio', id=ex.id_exercicio) }}" class="btn-escolha">ESCOLHER</a>
+                </div>
+                {% else %}
+                <div class="ex-card" style="border-color:#e4b827;">
+                  <strong>{{ ex.nome }}</strong>
+                  <div class="ex-info">
+                    Duração: {{ ex.duraçao }} min
+                  </div>
+                  <div class="ex-info">
+                    {{ ex.descriçao|truncate(60, True, '...') }}
+                  </div>
+                  <span style="color:#e4b827; font-weight:bold;">Atual</span>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% else %}
+            <p>Nenhum exercício cadastrado.</p>
+          {% endif %}
+        </div>
       </div>
     </main>
-
-
+    <script src="{{ url_for('static', filename='js/ex.js') }}"></script>
   </body>
 </html>
