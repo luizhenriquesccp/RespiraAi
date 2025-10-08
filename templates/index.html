@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RespiraAi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <header>
+      <nav class="nav-bar">
+        <h1>RespiraAi</h1>
+        <div class="menu-links">
+          <a href="#card">Exercícios</a>
+          <a href="{{ url_for('historico') }}">Histórico</a>
+          <a href="#estatisticas">Estatísticas</a>
+          <a href="{{ url_for('login') }}">LOGIN</a>
+          {% if usuario %}
+            <span style="margin-left:20px;color:#333;">
+              Logado como: {{ usuario.nome }} ({{ usuario.email }})
+            </span>
+            <a href="{{ url_for('logout') }}" style="margin-left:10px;">Sair</a>
+          {% endif %}
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="hero">
+        <h2>Bem-vindo ao RespiraAi!</h2>
+        <p>
+          Aqui você encontra exercícios de respiração, histórico das suas
+          atividades e estatísticas do seu progresso.
+        </p>
+        <p>Use o menu acima para navegar pelo sistema.</p>
+      </div>
+      <section class="cards" id="card">
+        <h4>Exercícios</h4>
+        <p>
+          Encontre uma variedade de exercícios de respiração para melhorar seu
+          bem-estar.
+        </p>
+        <a href="{{ url_for('lista_exercicios') }}"><button type="button" class="act">COMEÇAR</button></a>
+      </section>
+
+      <section class="cards" id="estatisticas">
+        <h4>Estatísticas da Semana</h4>
+        <p>
+          <strong>Total de minutos:</strong> {{ estatisticas.totalMinutos }}<br>
+          <strong>Práticas realizadas:</strong> {{ estatisticas.qtdPraticas }}<br>
+          <strong>Média por prática:</strong> {{ estatisticas.media }} min
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
