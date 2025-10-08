@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RespiraAi</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="nav-bar">
+        <h1>RespiraAi</h1>
+        <div class="menu-links">
+          <a href="#card">Exercícios</a>
+          <a href="{{ url_for('historico') }}">Histórico</a>
+          <a href="#estatisticas">Estatísticas</a>
+          {% if usuario %}
+          <a href="{{ url_for('logout') }}" style="margin-left: 10px">Sair</a>
+          {% endif %}
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="hero">
+        <h2>Bem-vindo ao RespiraAi!</h2>
+        <p>
+          Aqui você encontra exercícios de respiração, histórico das suas
+          atividades e estatísticas do seu progresso, {{ usuario.nome }}, tudo para melhorar seu
+          bem-estar.
+        </p>
+        <ul>
+          <li>Descubra técnicas de respiração para relaxamento e foco.</li>
+          <li>Acompanhe seu desempenho semanal e veja sua evolução.</li>
+          <li>Salve seu histórico de práticas para manter a motivação.</li>
+          <li>Receba dicas personalizadas para melhorar seu bem-estar.</li>
+        </ul>
+        <p>Use o menu acima para navegar pelo sistema.</p>
+        <br>
+        <h2>Você sabe o que é?</h2>
+        <p>Exercícios de respiração são técnicas que visam controlar voluntariamente o ato de inspirar e expirar para melhorar a função pulmonar, fortalecer a musculatura respiratória e promover o bem-estar físico e mental, como a redução do estresse e ansiedade. Essas práticas podem incluir a respiração diafragmática, a respiração com os lábios apertados, exercícios de contagem de tempos de inspiração e expiração, e a respiração alternada pelas narinas para relaxar e equilibrar o corpo. </p>
+      </div>
+      <section class="cards" id="card">
+        <h4>Exercícios</h4>
+        <p>
+          Encontre uma variedade de exercícios de respiração para melhorar seu
+          bem-estar, {{ usuario.nome }}.
+        </p>
+        <a href="{{ url_for('lista_exercicios') }}"
+          ><button type="button" class="act">COMEÇAR</button></a
+        >
+      </section>
+
+      <section class="cards" id="estatisticas">
+        <h4>Estatísticas da Semana</h4>
+        <p>
+          <strong>Total de minutos:</strong> {{ estatisticas.totalMinutos }}<br />
+          <strong>Práticas realizadas:</strong> {{ estatisticas.qtdPraticas
+          }}<br />
+          <strong>Média por prática:</strong> {{ estatisticas.media }} min
+        </p>
+      </section>
+    </main>
+    <footer>
+      <p>
+        <strong>RespiraAi</strong> &copy; 2025<br />
+        Projeto desenvolvido por estudantes do curso de Informática do
+        <strong>IFRN</strong>.<br />
+        Desenvolvedores: Luiz Henrique, Luiz Fernando, Alec, Ricardo, João
+        Gabriel e Fabrício.<br />
+        Site sem fins lucrativos.<br />
+        Para melhorar seu bem-estar.
+      </p>
+    </footer>
+  </body>
+</html>
