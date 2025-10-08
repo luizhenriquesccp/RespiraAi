@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RespiraAi</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
   </head>
   <body>
     <header>
@@ -15,10 +18,7 @@
           <a href="{{ url_for('historico') }}">Histórico</a>
           <a href="#estatisticas">Estatísticas</a>
           {% if usuario %}
-            <span>
-            {{ usuario.nome }} 
-            </span>
-            <a href="{{ url_for('logout') }}" style="margin-left:10px;">Sair</a>
+          <a href="{{ url_for('logout') }}" style="margin-left: 10px">Sair</a>
           {% endif %}
         </div>
       </nav>
@@ -28,27 +28,48 @@
         <h2>Bem-vindo ao RespiraAi!</h2>
         <p>
           Aqui você encontra exercícios de respiração, histórico das suas
-          atividades e estatísticas do seu progresso.
+          atividades e estatísticas do seu progresso, {{ usuario.nome }}, tudo para melhorar seu
+          bem-estar.
         </p>
+        <ul>
+          <li>Descubra técnicas de respiração para relaxamento e foco.</li>
+          <li>Acompanhe seu desempenho semanal e veja sua evolução.</li>
+          <li>Salve seu histórico de práticas para manter a motivação.</li>
+          <li>Receba dicas personalizadas para melhorar seu bem-estar.</li>
+        </ul>
         <p>Use o menu acima para navegar pelo sistema.</p>
       </div>
       <section class="cards" id="card">
         <h4>Exercícios</h4>
         <p>
           Encontre uma variedade de exercícios de respiração para melhorar seu
-          bem-estar.
+          bem-estar, {{ usuario.nome }}.
         </p>
-        <a href="{{ url_for('lista_exercicios') }}"><button type="button" class="act">COMEÇAR</button></a>
+        <a href="{{ url_for('lista_exercicios') }}"
+          ><button type="button" class="act">COMEÇAR</button></a
+        >
       </section>
 
       <section class="cards" id="estatisticas">
         <h4>Estatísticas da Semana</h4>
         <p>
-          <strong>Total de minutos:</strong> {{ estatisticas.totalMinutos }}<br>
-          <strong>Práticas realizadas:</strong> {{ estatisticas.qtdPraticas }}<br>
+          <strong>Total de minutos:</strong> {{ estatisticas.totalMinutos }}<br />
+          <strong>Práticas realizadas:</strong> {{ estatisticas.qtdPraticas
+          }}<br />
           <strong>Média por prática:</strong> {{ estatisticas.media }} min
         </p>
       </section>
     </main>
+    <footer>
+      <p>
+        <strong>RespiraAi</strong> &copy; 2025<br />
+        Projeto desenvolvido por estudantes do curso de Informática do
+        <strong>IFRN</strong>.<br />
+        Desenvolvedores: Luiz Henrique, Luiz Fernando, Alec, Ricardo, João
+        Gabriel e Fabrício.<br />
+        Site sem fins lucrativos.<br />
+        Para melhorar seu bem-estar.
+      </p>
+    </footer>
   </body>
 </html>
