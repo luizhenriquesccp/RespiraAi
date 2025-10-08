@@ -212,6 +212,29 @@
         </div>
       </div>
     </main>
+    <script>
+  const circle = document.getElementById("breathCircle");
+  const startBtn = document.getElementById("btnIniciar");
+  const pauseBtn = document.getElementById("btnPausar");
+
+  let breathingAnimation;
+  let isAnimating = false;
+
+  function startBreathing() {
+    if (isAnimating) return;
+    isAnimating = true;
+    circle.style.animation = "breathingCycle 8s ease-in-out infinite";
+  }
+
+  function pauseBreathing() {
+    isAnimating = false;
+    circle.style.animation = "none";
+  }
+
+  startBtn.addEventListener("click", startBreathing);
+  pauseBtn.addEventListener("click", pauseBreathing);
+</script>
+
     <script src="{{ url_for('static', filename='js/ex.js') }}"></script>
   </body>
 </html>
