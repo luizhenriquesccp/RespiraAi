@@ -1,17 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from datetime import datetime
-import mysql.connector
+from app import app
+from flask import render_template, request, redirect, url_for, flash, session, jsonify
+from app.services.UsuarioService import UsuarioService
 
-app = Flask(__name__)
-app.secret_key = 'respira_ai_secret_key_2024'
-
-def get_db():
-    return mysql.connector.connect(
-        user="root",
-        password="labinfo",
-        database="setembroamarelo",
-        host="127.0.0.1"
-    )
 
 @app.route("/")
 def index():

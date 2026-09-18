@@ -117,3 +117,25 @@ Para uso em produção, considere:
 - Adicionar validações de segurança
 - Implementar hash de senhas
 - Configurar para ambiente de produção
+
+## Modelos SQLAlchemy
+
+Os modelos ORM estão em [`app/models/__init__.py`](app/models/__init__.py) e
+representam as tabelas `usuario`, `exercicio` e `pratica` do dump SQL.
+
+Exemplo de configuração e criação das tabelas:
+
+```python
+from sqlalchemy import create_engine
+
+from app.models import Base
+
+engine = create_engine(
+    "mysql+mysqlconnector://usuario:senha@127.0.0.1/setembroamarelo"
+)
+Base.metadata.create_all(engine)
+```
+
+Para SQLite, basta trocar a URL por `sqlite:///respiraai.db`. Os
+relacionamentos disponíveis são `Usuario.praticas`,
+`Exercicio.praticas`, `Pratica.usuario` e `Pratica.exercicio`.
