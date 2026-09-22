@@ -1,37 +1,15 @@
 from flask import Flask
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
+from flask_wtf import CSRFProtect
 from config import Config
-from app.models import Base, Exercicio, Pratica, Usuario
-
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-engine = create_engine(
-    app.config["SQLALCHEMY_DATABASE_URI"],
-    pool_pre_ping=True,
-)
-SessionLocal = sessionmaker(
-    bind=engine,
-    autoflush=False,
-    autocommit=False,
-)
+db = SQLAlchemy(app)
+csrf = CSRFProtect(app)
 
+from app import routes, models
 
-def create_tables() -> None:
-    """Cria as tabelas mapeadas caso ainda não existam."""
-    Base.metadata.create_all(bind=engine)
-
-
-__all__ = [
-    "Base",
-    "Exercicio",
-    "Pratica",
-    "SessionLocal",
-    "Usuario",
-    "app",
-    "create_tables",
-    "engine",
-]
+with app.app_context():
+    db.create_all()
