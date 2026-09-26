@@ -10,6 +10,7 @@
     <div class="login-container">
         <h1>Cadastra-se</h1>
         <form class="login-form" method="POST" action="{{ url_for('cadastro') }}" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="text" name="nome" placeholder="Nome completo" required>
             <input type="email" name="email" placeholder="E-mail" required>
             <input type="password" name="senha" placeholder="Senha" required>

@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const terminateBtn = document.getElementById("btnTerminar");
   const timeDisplay = document.getElementById("tempoTotal");
   const exBox = document.querySelector('.ex-box');
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
   // --- Variáveis de Controle ---
   let timerInterval = null; // Guarda o intervalo do cronômetro
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
+                  'X-CSRFToken': csrfToken,
               },
               body: JSON.stringify(praticaData),
           });

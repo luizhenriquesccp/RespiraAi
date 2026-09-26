@@ -1,8 +1,19 @@
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.models import Usuario
+
+
 class AuthenticationService:
-    
-    def login(form):
-        print("O usuario {} fez o login, lembrar={}".format(
-            form.username.data,
-            form.remember_me.data
-        ))
-        return True
+    @staticmethod
+    def login(
+        db_session: Session,
+        email: str | None,
+        senha: str | None,
+    ) -> Usuario | None:
+        return db_session.scalar(
+            select(Usuario).where(
+                Usuario.email == email,
+                Usuario.senha == senha,
+            )
+        )

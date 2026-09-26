@@ -1,7 +1,11 @@
-from app import app
-from Flask import render_template, request, redirect, url_for, session, flash, jsonify
+from datetime import datetime
+
+from app import app, db
+from flask import render_template, request, redirect, url_for, session, flash, jsonify
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from app.models import Exercicio, Pratica, Usuario
 from app.services.AuthenticationService import AuthenticationService
-from app.services.UsuarioService import UsuarioService
 
 @app.route("/")
 def index():
@@ -9,13 +13,15 @@ def index():
     if not usuario_atual:
         return redirect(url_for("login"))
 
-    with SessionLocal() as db:
-        user = UsuarioService.buscar_por_email(db, usuario_atual)
+    with db.session() as db_session:
+        user = db_session.scalar(
+            select(Usuario).where(Usuario.email == usuario_atual)
+        )
         if not user:
             flash("Usuário não encontrado. Faça login novamente.")
             return redirect(url_for("login"))
 
-        praticas_usuario = db.scalars(
+        praticas_usuario = db_session.scalars(
             select(Pratica).where(Pratica.id_usuario == user.id)
         ).all()
 
@@ -37,8 +43,8 @@ def login():
 
     usuario = request.form.get("user")
     senha = request.form.get("pass")
-    with SessionLocal() as db:
-        user = AuthenticationService.login(db, usuario, senha)
+    with db.session() as db_session:
+        user = AuthenticationService.login(db_session, usuario, senha)
 
     if user:
         session["usuario"] = user.email
@@ -57,20 +63,22 @@ def cadastro():
     email = request.form.get("email")
     senha = request.form.get("senha")
 
-    with SessionLocal() as db:
-        usuario_existente = UsuarioService.buscar_por_email(db, email)
-        if usuario_existente:
-            return render_template("cadastro.html", erro="E-mail já cadastrado")
+    usuario_existente = db.session.scalar(
+        select(Usuario).where(Usuario.email == email)
+    )
+    if usuario_existente:
+        return render_template("cadastro.html", erro="E-mail já cadastrado")
 
-        try:
-            UsuarioService.salvar(db, nome, email, senha)
-        except SQLAlchemyError:
-            db.rollback()
-            app.logger.exception("Erro ao cadastrar usuário")
-            return render_template(
-                "cadastro.html",
-                erro="Não foi possível cadastrar o usuário.",
-            )
+    try:
+        db.session.add(Usuario(nome=nome, email=email, senha=senha))
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        app.logger.exception("Erro ao cadastrar usuário")
+        return render_template(
+            "cadastro.html",
+            erro="Não foi possível cadastrar o usuário.",
+        )
 
     return redirect(url_for("login"))
 
@@ -81,8 +89,8 @@ def historico():
     if not usuario_atual:
         return redirect(url_for("login"))
 
-    with SessionLocal() as db:
-        praticas = db.scalars(
+    with db.session() as db_session:
+        praticas = db_session.scalars(
             select(Pratica)
             .join(Pratica.usuario)
             .join(Pratica.exercicio)
@@ -142,8 +150,10 @@ def salvar_pratica():
             400,
         )
 
-    with SessionLocal() as db:
-        user = db.scalar(select(Usuario).where(Usuario.email == usuario_atual))
+    with db.session() as db_session:
+        user = db_session.scalar(
+            select(Usuario).where(Usuario.email == usuario_atual)
+        )
         if not user:
             return (
                 jsonify(
@@ -155,7 +165,7 @@ def salvar_pratica():
                 404,
             )
 
-        exercicio = db.get(Exercicio, id_exercicio)
+        exercicio = db_session.get(Exercicio, id_exercicio)
         if not exercicio:
             return (
                 jsonify(
@@ -173,11 +183,11 @@ def salvar_pratica():
             usuario=user,
             exercicio=exercicio,
         )
-        db.add(pratica)
+        db_session.add(pratica)
         try:
-            db.commit()
+            db_session.commit()
         except SQLAlchemyError:
-            db.rollback()
+            db_session.rollback()
             app.logger.exception("Erro ao salvar prática")
             return (
                 jsonify(
@@ -204,8 +214,8 @@ def lista_exercicios():
     if not usuario_atual:
         return redirect(url_for("login"))
 
-    with SessionLocal() as db:
-        exercicios = db.scalars(
+    with db.session() as db_session:
+        exercicios = db_session.scalars(
             select(Exercicio).order_by(Exercicio.id_exercicio.asc())
         ).all()
 
@@ -224,9 +234,9 @@ def exibir_exercicio(id):
     if not usuario_atual:
         return redirect(url_for("login"))
 
-    with SessionLocal() as db:
-        exercicio = db.get(Exercicio, id)
-        exercicios = db.scalars(
+    with db.session() as db_session:
+        exercicio = db_session.get(Exercicio, id)
+        exercicios = db_session.scalars(
             select(Exercicio).order_by(Exercicio.id_exercicio.asc())
         ).all()
 

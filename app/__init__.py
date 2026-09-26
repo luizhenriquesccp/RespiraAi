@@ -12,4 +12,4 @@ csrf = CSRFProtect(app)
 from app import routes, models
 
 with app.app_context():
-    db.create_all()
+    models.Base.metadata.create_all(bind=db.engine)
