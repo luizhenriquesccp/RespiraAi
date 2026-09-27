@@ -139,3 +139,7 @@ Base.metadata.create_all(engine)
 Para SQLite, basta trocar a URL por `sqlite:///respiraai.db`. Os
 relacionamentos disponíveis são `Usuario.praticas`,
 `Exercicio.praticas`, `Pratica.usuario` e `Pratica.exercicio`.
+
+Na inicialização, a aplicação também cadastra os exercícios padrão definidos
+em `app/seed.py`. A carga é idempotente: exercícios com nomes já existentes
+são mantidos, e somente os que estiverem faltando são inseridos.

@@ -19,7 +19,9 @@
         <div class="cadastro">
             Já tem uma conta? <a href="{{ url_for('login') }}">Entrar</a>
         </div>
-        <div id="mensagem" style="margin-top:10px;color:red;"></div>
+        {% if erro %}
+        <p id="erro" role="alert" style="margin-top:10px;color:red;">{{ erro }}</p>
+        {% endif %}
     </div>
 
 </body>

@@ -41,10 +41,10 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
-    usuario = request.form.get("user")
+    email = request.form.get("email")
     senha = request.form.get("pass")
     with db.session() as db_session:
-        user = AuthenticationService.login(db_session, usuario, senha)
+        user = AuthenticationService.login(db_session, email, senha)
 
     if user:
         session["usuario"] = user.email

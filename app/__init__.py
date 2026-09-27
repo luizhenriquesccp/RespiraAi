@@ -10,6 +10,9 @@ db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 
 from app import routes, models
+from app.seed import seed_exercicios
 
 with app.app_context():
     models.Base.metadata.create_all(bind=db.engine)
+    with db.session() as db_session:
+        seed_exercicios(db_session)
