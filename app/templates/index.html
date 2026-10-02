@@ -4,73 +4,106 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RespiraAi</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/styles.css') }}"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
     />
   </head>
   <body>
     <header>
-      <nav class="nav-bar">
-        <h1>RespiraAi</h1>
-        <div class="menu-links">
-          <a href="#card">Exercícios</a>
-          <a href="{{ url_for('historico') }}">Histórico</a>
-          <a href="#estatisticas">Estatísticas</a>
-          {% if usuario %}
-          <a href="{{ url_for('logout') }}" style="margin-left: 10px">Sair</a>
+      <nav class="navbar navbar-expand-lg  shadow-sm py-3">
+        <div class="container">
+          <a class="navbar-brand" href="{{ url_for('index') }}">RespiraAí</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              
+          <li class="nav-item menu-links">
+          <a class="nav-link fs-5 px-3" href="#card">Exercícios</a>
+           </li>
+              <li class="nav-item">
+                <a class="nav-link fs-5 px-3" href="{{ url_for('historico') }}">Histórico</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fs-5 px-3" href="#estatisticas">Estatísticas</a>
+              </li>
+          {% if not usuario %}
+          <li class="nav-item">
+                <a class="nav-link fs-5 px-3" href="{{ url_for('login') }}">Entrar</a>
+              </li>
+              {% endif %}
+              {% if usuario %}
+              <li class="nav-item">
+                <a class="nav-link fs-5 px-3 text-danger" href="{{ url_for('logout') }}" style="margin-left: 10px">Sair</a>
+          </li>
           {% endif %}
+            </ul>
+            </div>
         </div>
       </nav>
     </header>
-    <main>
-      <div class="hero">
-        <h2>Bem-vindo ao RespiraAi!</h2>
-        <p>
+
+    <main class="container my-5">
+      <div class="hero bg-light p-5 rounded-4 mb-5">
+        <h2 class="display-5 fw-bold mb-4">Bem-vindo ao RespiraAi!</h2>
+        <p class="lead mb-4">
           Aqui você encontra exercícios de respiração, histórico das suas
           atividades e estatísticas do seu progresso, {{ usuario.nome }}, tudo para melhorar seu
           bem-estar.
         </p>
-        <ul>
-          <li>Descubra técnicas de respiração para relaxamento e foco.</li>
-          <li>Acompanhe seu desempenho semanal e veja sua evolução.</li>
-          <li>Salve seu histórico de práticas para manter a motivação.</li>
-          <li>Receba dicas personalizadas para melhorar seu bem-estar.</li>
+        <ul class="list-group list-group-flush bg-transparent mb-4">
+          <li class="list-group-item bg-transparent border-0 ps-0">✓Descubra técnicas de respiração para relaxamento e foco.</li>
+          <li class="list-group-item bg-transparent border-0 ps-0">✓Acompanhe seu desempenho semanal e veja sua evolução.</li>
+          <li class="list-group-item bg-transparent border-0 ps-0">✓Salve seu histórico de práticas para manter a motivação.</li>
+          <li class="list-group-item bg-transparent border-0 ps-0">✓Receba dicas personalizadas para melhorar seu bem-estar.</li>
         </ul>
-        <p>Use o menu acima para navegar pelo sistema.</p>
-        <br>
-        
+        <p class="text-muted">Use o menu acima para navegar pelo sistema.</p>
+        <br> 
       </div>
-      <section class="cards" id="card">
-        <h4>Exercícios</h4>
-        <p>
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <section class="cards h-100 border-0 shadow-sm bg-warning-subtle p-4 text-center" id="card">
+            <div class="card-body">
+          <h4 class="card-title h2 fw-bold mb-3">Exercícios</h4>
+        <p class="card-text mb-4">
           Encontre uma variedade de exercícios de respiração para melhorar seu
           bem-estar, {{ usuario.nome }}.
         </p>
-        <a href="{{ url_for('lista_exercicios') }}"
-          ><button type="button" class="act">COMEÇAR</button></a
-        >
+        <a href="{{ url_for('lista_exercicios') }}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold shadow-sm">COMEÇAR</a>
+      </div>
       </section>
-
-      <section class="cards" id="estatisticas">
-        <h4>Estatísticas da Semana</h4>
-        <p>
-          <strong>Total de minutos:</strong> {{ estatisticas.totalMinutos }}<br />
-          <strong>Práticas realizadas:</strong> {{ estatisticas.qtdPraticas
-          }}<br />
-          <strong>Média por prática:</strong> {{ estatisticas.media }} min
-        </p>
+      </div>
+       <div class="col-md-6">
+      <section class="cards h-100 border-0 shadow-sm bg-warning-subtle p-4 text-center" id="estatisticas">
+        <div class="card-body"></div>
+        <h4 class="card-title h2 fw-bold mb-3">Estatísticas da Semana</h4>
+         <div class="card-text fs-5">
+        <p class="mb-2"><strong>Total de minutos:</strong> {{ estatisticas.totalMinutos }}</p>
+        <p class="mb-2"><strong>Práticas realizadas:</strong> {{ estatisticas.qtdPraticas }}</p>
+        <p class="mb-0"><strong>Média por prática:</strong> {{ estatisticas.media }} min</p>
+      </div>
+      </div>
       </section>
+      </div>
+    </div>
     </main>
-    <footer>
-      <p>
-        <strong>RespiraAi</strong> &copy; 2025<br />
+
+    <footer class="bg-warning py-5 mt-5 border-top border-dark border-opacity-10">
+      <div class="container text-center">
+      <p class="mb-0">
+        <strong class="fs-4">RespiraAi</strong> &copy; 2025<br />
+         <span class="text-dark text-opacity-75">
         Projeto desenvolvido por estudantes do curso de Informática do
         <strong>IFRN</strong>.<br />
         Desenvolvedores: Luiz Henrique e Luiz Fernando<br />
         Site sem fins lucrativos.<br />
         Para melhorar seu bem-estar.
+      </span>
       </p>
+      </div>
     </footer>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

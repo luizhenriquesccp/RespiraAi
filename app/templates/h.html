@@ -4,44 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RespiraAi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 <body>
   <header>
-    <nav class="nav-bar">
-      <h1>RespiraAi</h1>
-      <div class="menu-links">
-        <a href="{{ url_for('index') }}">Exercícios</a>
-        <a href="{{ url_for('historico') }}">Histórico</a>
-        <a href="{{ url_for('index') }}">Estatísticas</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning shadow-sm py-3">
+      <div class="container">
+        <a class="navbar-brand fs-1 fw-normal" href="{{ url_for('index') }}" style="font-family: 'Times New Roman', Times, serif;">Respira Aí</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+      <li class="nav-item menu-links">
+       <a class="nav-link fs-5 px-3" href="{{ url_for('index') }}">Exercícios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fs-5 px-3 active" href="{{ url_for('historico') }}">Histórico</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fs-5 px-3" href="{{ url_for('index') }}#estatisticas">Estatísticas</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
   </header>
 
 
     <main class="historico-main-content">
-      <h1>ÚLTIMAS PRÁTICAS</h1>
+      <h1 class="display-5 fw-bold mb-4">ÚLTIMAS PRÁTICAS</h1>
 
       <div class="tabela-praticas-container">
         <table class="tabela-praticas">
-          <thead>
+          <thead class="table-light">
             <tr>
-              <th>DATA</th>
-              <th>EXERCÍCIOS</th>
-              <th>TEMPO</th>
+              <th class="py-3 px-4">DATA</th>
+              <th class="py-3 px-4">EXERCÍCIOS</th>
+              <th class="py-3 px-4">TEMPO</th>
             </tr>
           </thead>
           <tbody>
             {% for pratica in praticas %}
             <tr>
-              <td>{{ pratica.data }}</td>
-              <td>{{ pratica.exercicio }}</td>
-              <td>{{ pratica.tempo_dedicado }} min</td>
+              <td class="py-3 px-4 align-middle">{{ pratica.data }}</td>
+              <td class="py-3 px-4 align-middle">{{ pratica.exercicio }}</td>
+              <td class="py-3 px-4 align-middle">{{ pratica.tempo_dedicado }} min</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </main>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
