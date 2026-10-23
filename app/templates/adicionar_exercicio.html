@@ -3,41 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adicionar Exercício - Respira Aí</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>
+    {% if editar %}Editar exercício{% else %}Adicionar exercício{% endif %} - Respira Aí
+  </title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
 </head>
 <body>
   <div class="container my-5">
-    <h2 class="mb-4">Adicionar Exercício</h2>
+    <h2 class="mb-4">
+      {% if editar %}Editar exercício{% else %}Adicionar exercício{% endif %}
+    </h2>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <div class="alert alert-warning">
-          {% for msg in messages %}{{ msg }}<br>{% endfor %}
+          {% for msg in messages %}
+            {{ msg }}  
+
+          {% endfor %}
         </div>
       {% endif %}
     {% endwith %}
 
-    <form method="post" action="{{ url_for('adicionar_exercicio') }}">
+    {% if editar %}
+      <form method="post"
+            action="{{ url_for('editar_exercicio', id=exercicio.id_exercicio) }}">
+    {% else %}
+      <form method="post" action="{{ url_for('adicionar_exercicio') }}">
+    {% endif %}
+
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
       <div class="mb-3">
-        <label class="form-label">Nome</label>
-        <input type="text" name="nome" class="form-control" value="{{ nome or '' }}" required>
+        <label for="nome" class="form-label">Nome</label>
+        <input
+          id="nome"
+          type="text"
+          name="nome"
+          class="form-control"
+          maxlength="100"
+          value="{{ nome if nome is defined else (exercicio.nome if exercicio else '') }}"
+          required
+        >
       </div>
+
       <div class="mb-3">
-        <label class="form-label">Duração (minutos)</label>
-        <input type="number" step="0.1" min="0" name="duracao" class="form-control" value="{{ duracao or '' }}" required>
+        <label for="duracao" class="form-label">Duração (minutos)</label>
+        <input
+          id="duracao"
+          type="number"
+          name="duracao"
+          class="form-control"
+          min="1"
+          step="1"
+          value="{{ duracao if duracao is defined else (exercicio.duracao if exercicio else '') }}"
+          required
+        >
       </div>
+
       <div class="mb-3">
-        <label class="form-label">Descrição</label>
-        <textarea name="descricao" class="form-control" rows="4">{{ descricao or '' }}</textarea>
+        <label for="descricao" class="form-label">Descrição</label>
+        <textarea
+          id="descricao"
+          name="descricao"
+          class="form-control"
+          rows="4"
+          maxlength="1000"
+          required
+        >{{ descricao if descricao is defined else (exercicio.descricao if exercicio else '') }}</textarea>
       </div>
+
       <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-warning">Adicionar</button>
-        <a href="{{ url_for('lista_exercicios') }}" class="btn btn-outline-secondary">Voltar</a>
+        <button type="submit" class="btn btn-warning">
+          {% if editar %}Salvar alterações{% else %}Adicionar exercício{% endif %}
+        </button>
+
+        <a href="{{ url_for('lista_exercicios') }}"
+           class="btn btn-outline-secondary">
+          Voltar
+        </a>
       </div>
     </form>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

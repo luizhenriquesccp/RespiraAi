@@ -249,3 +249,136 @@ def exibir_exercicio(id):
         exercicio=exercicio,
         exercicios=exercicios,
     )
+
+@app.route("/exercicio/adicionar", methods=["GET", "POST"])
+def adicionar_exercicio():
+    # Exige que o usuário esteja logado
+    if not session.get("usuario"):
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        nome = (request.form.get("nome") or "").strip()
+        descricao = (request.form.get("descricao") or "").strip()
+        duracao_texto = (request.form.get("duracao") or "").strip()
+
+        # Validação básica
+        if not nome or not descricao or not duracao_texto:
+            flash("Preencha todos os campos.")
+            return render_template(
+                "adicionar_exercicio.html",
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=False,
+            )
+
+        try:
+            duracao = int(duracao_texto)
+            if duracao <= 0:
+                raise ValueError
+        except ValueError:
+            flash("A duração deve ser um número inteiro maior que zero.")
+            return render_template(
+                "adicionar_exercicio.html",
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=False,
+            )
+
+        try:
+            exercicio = Exercicio(
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao,
+            )
+            db.session.add(exercicio)
+            db.session.commit()
+            flash("Exercício cadastrado com sucesso!")
+            return redirect(
+                url_for("exibir_exercicio", id=exercicio.id_exercicio)
+            )
+        except SQLAlchemyError:
+            db.session.rollback()
+            app.logger.exception("Erro ao cadastrar exercício")
+            flash("Não foi possível cadastrar o exercício.")
+            return render_template(
+                "adicionar_exercicio.html",
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=False,
+            )
+
+    return render_template("adicionar_exercicio.html", editar=False)
+
+
+@app.route("/exercicio/<int:id>/editar", methods=["GET", "POST"])
+def editar_exercicio(id):
+    # Exige que o usuário esteja logado
+    if not session.get("usuario"):
+        return redirect(url_for("login"))
+
+    exercicio = db.session.get(Exercicio, id)
+
+    if not exercicio:
+        flash("Exercício não encontrado.")
+        return redirect(url_for("lista_exercicios"))
+
+    if request.method == "POST":
+        nome = (request.form.get("nome") or "").strip()
+        descricao = (request.form.get("descricao") or "").strip()
+        duracao_texto = (request.form.get("duracao") or "").strip()
+
+        # Validação básica
+        if not nome or not descricao or not duracao_texto:
+            flash("Preencha todos os campos.")
+            return render_template(
+                "adicionar_exercicio.html",
+                exercicio=exercicio,
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=True,
+            )
+
+        try:
+            duracao = int(duracao_texto)
+            if duracao <= 0:
+                raise ValueError
+        except ValueError:
+            flash("A duração deve ser um número inteiro maior que zero.")
+            return render_template(
+                "adicionar_exercicio.html",
+                exercicio=exercicio,
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=True,
+            )
+
+        try:
+            exercicio.nome = nome
+            exercicio.descricao = descricao
+            exercicio.duracao = duracao
+            db.session.commit()
+            flash("Exercício atualizado com sucesso!")
+            return redirect(url_for("exibir_exercicio", id=exercicio.id_exercicio))
+        except SQLAlchemyError:
+            db.session.rollback()
+            app.logger.exception("Erro ao atualizar exercício")
+            flash("Não foi possível atualizar o exercício.")
+            return render_template(
+                "adicionar_exercicio.html",
+                exercicio=exercicio,
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=True,
+            )
+
+    return render_template(
+        "adicionar_exercicio.html",
+        exercicio=exercicio,
+        editar=True,
+    )
