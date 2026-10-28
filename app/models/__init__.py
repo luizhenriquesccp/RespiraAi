@@ -74,5 +74,21 @@ class Pratica(Base):
         back_populates="praticas",
     )
 
+class Administrador(Base):
+    """Conta de administrador da aplicação."""
+    __tablename__ = "administrador"
 
-__all__ = ["Base", "Exercicio", "Pratica", "Usuario"]
+    id_administrador: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+    nome: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    email: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=False,
+        unique=True,
+    )
+    senha: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+__all__ = ["Administrador","Base", "Exercicio", "Pratica", "Usuario"]

@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from app.models import Exercicio, Pratica, Usuario
 from app.services.AuthenticationService import AuthenticationService
-
+from app.models import Administrador,Exercicio, Pratica, Usuario
 @app.route("/")
 def index():
     usuario_atual = session.get("usuario")
@@ -382,3 +382,73 @@ def editar_exercicio(id):
         exercicio=exercicio,
         editar=True,
     )
+
+@app.route("/administrador/login", methods=["GET", "POST"])
+def login_administrador():
+    if request.method == "GET":
+        return render_template("login_administrador.html")
+
+    email = (request.form.get("email") or "").strip()
+    senha = request.form.get("senha") or ""
+
+    administrador = db.session.scalar(
+        select(Administrador).where(
+            Administrador.email == email,
+            Administrador.senha == senha,
+        )
+    )
+
+    if not administrador:
+        return render_template(
+            "login_administrador.html",
+            erro="E-mail ou senha incorretos.",
+        )
+
+    # Sessão própria, separada da sessão de usuário comum.
+    session["administrador"] = administrador.email
+    return redirect(url_for("index"))
+
+
+@app.route("/administrador/cadastro", methods=["GET", "POST"])
+def cadastro_administrador():
+    if request.method == "GET":
+        return render_template("cadastro_administrador.html")
+
+    nome = (request.form.get("nome") or "").strip()
+    email = (request.form.get("email") or "").strip()
+    senha = request.form.get("senha") or ""
+
+    if not nome or not email or not senha:
+        return render_template(
+            "cadastro_administrador.html",
+            erro="Preencha todos os campos.",
+        )
+
+    administrador_existente = db.session.scalar(
+        select(Administrador).where(Administrador.email == email)
+    )
+
+    if administrador_existente:
+        return render_template(
+            "cadastro_administrador.html",
+            erro="Esse e-mail já está cadastrado como administrador.",
+        )
+
+    try:
+        administrador = Administrador(
+            nome=nome,
+            email=email,
+            senha=senha,
+        )
+        db.session.add(administrador)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        app.logger.exception("Erro ao cadastrar administrador")
+        return render_template(
+            "cadastro_administrador.html",
+            erro="Não foi possível cadastrar o administrador.",
+        )
+
+    flash("Cadastro de administrador realizado. Faça login.")
+    return redirect(url_for("login_administrador"))
