@@ -404,9 +404,11 @@ def login_administrador():
             erro="E-mail ou senha incorretos.",
         )
 
-    # Sessão própria, separada da sessão de usuário comum.
+    # Limpa eventual sessão de usuário comum: os acessos ficam separados.
+    session.pop("usuario", None)
     session["administrador"] = administrador.email
-    return redirect(url_for("index"))
+
+    return redirect(url_for("painel_administrador"))
 
 
 @app.route("/administrador/cadastro", methods=["GET", "POST"])
@@ -450,5 +452,61 @@ def cadastro_administrador():
             erro="Não foi possível cadastrar o administrador.",
         )
 
-    flash("Cadastro de administrador realizado. Faça login.")
+    flash("Cadastro realizado. Entre com seu e-mail e senha.")
     return redirect(url_for("login_administrador"))
+
+
+@app.route("/administrador/painel")
+def painel_administrador():
+    if not session.get("administrador"):
+        return redirect(url_for("login_administrador"))
+
+    usuarios = db.session.scalars(
+        select(Usuario).order_by(Usuario.id.asc())
+    ).all()
+
+    return render_template(
+        "painel_administrador.html",
+        usuarios=usuarios,
+        administrador=session["administrador"],
+    )
+
+
+@app.route("/administrador/usuario/<int:id>/excluir", methods=["POST"])
+def excluir_usuario(id):
+    if not session.get("administrador"):
+        return redirect(url_for("login_administrador"))
+
+    usuario = db.session.get(Usuario, id)
+
+    if not usuario:
+        flash("Usuário não encontrado.")
+        return redirect(url_for("painel_administrador"))
+
+    try:
+        # Remove primeiro as práticas ligadas ao usuário, para evitar
+        # violação da chave estrangeira.
+        praticas = db.session.scalars(
+            select(Pratica).where(Pratica.id_usuario == usuario.id)
+        ).all()
+
+        for pratica in praticas:
+            db.session.delete(pratica)
+
+        db.session.delete(usuario)
+        db.session.commit()
+        flash("Usuário e seus registros de prática foram excluídos.")
+    except SQLAlchemyError:
+        db.session.rollback()
+        app.logger.exception("Erro ao excluir usuário")
+        flash("Não foi possível excluir o usuário.")
+
+    return redirect(url_for("painel_administrador"))
+
+
+@app.route("/administrador/logout")
+def logout_administrador():
+    session.pop("administrador", None)
+    return redirect(url_for("login_administrador"))
+
+
