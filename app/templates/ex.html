@@ -1,282 +1,367 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ exercicio.nome }} - RespiraAi</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-    <style>
-      /* Estilos gerais da página (sem alterações) */
-      .descricao-ex {
-        margin-bottom: 24px;
-        font-size: 1.2em;
-        color: #333;
-        background: #fffde7;
-        border-radius: 16px;
-        padding: 18px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        max-width: 480px;
-        text-align: left;
-      }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>{{ exercicio.nome }} - RespiraAi</title>
+
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+
+  <style>
+    .descricao-ex {
+      margin-bottom: 24px;
+      font-size: 1.2em;
+      color: #333;
+      background: #fffde7;
+      border-radius: 16px;
+      padding: 18px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      max-width: 480px;
+      text-align: left;
+    }
+
+    .ex-box {
+      margin: 48px auto 0 auto;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .circle {
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, #ffeb3b 60%, #ffcb5b 100%);
+      border-radius: 50%;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.5s ease-out;
+    }
+
+    .circle.animating {
+      animation: breathing 8s ease-in-out infinite;
+    }
+
+    @keyframes breathing {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.3); }
+      60% { transform: scale(1.3); }
+      90% { transform: scale(0.8); }
+      100% { transform: scale(1); }
+    }
+
+    .instruction {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 200px;
+      color: #222;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 24px;
+      width: 100%;
+    }
+
+    .btn-circular,
+    .btn-retangular,
+    .btn-escolha {
+      cursor: pointer;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .btn-circular {
+      background: #fff;
+      color: #111;
+      border: 2px solid #111;
+      border-radius: 50px;
+      padding: 18px 48px;
+      font-size: 1.3em;
+      box-shadow: none;
+    }
+
+    .btn-circular:hover {
+      background: #ffeb3b;
+    }
+
+    .btn-retangular {
+      background: #ffeb3b;
+      color: #111;
+      border: 2px solid #ffeb3b;
+      border-radius: 30px;
+      padding: 16px 0;
+      font-size: 1.3em;
+      width: 100%;
+      margin-bottom: 28px;
+    }
+
+    .btn-retangular:hover {
+      background: #e4b827;
+      border-color: #e4b827;
+      color: #fff;
+    }
+
+    .btn-escolha {
+      display: inline-block;
+      background: #ffffff;
+      color: #111;
+      border: 2px solid #ffeb3b;
+      border-radius: 30px;
+      padding: 10px 24px;
+      font-size: 1em;
+      text-decoration: none;
+    }
+
+    .btn-escolha:hover {
+      background: #e4b827;
+      border-color: #e4b827;
+      color: #fff;
+    }
+
+    .tempo-total {
+      font-size: 1.5em;
+      color: #111;
+      margin-top: 10px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    p {
+      background: #fffde7;
+      border-radius: 16px;
+      padding: 10px 20px;
+      max-width: 480px;
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 700px) {
       .ex-box {
-        margin: 48px auto 0 auto;
-        max-width: 520px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        max-width: 98vw;
       }
+
       .circle {
-        width: 180px;
-        height: 180px;
-        background: radial-gradient(circle, #ffeb3b 60%, #ffcb5b 100%);
-        border-radius: 50%;
-        margin-bottom: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.5s ease-out;
+        width: 120px;
+        height: 120px;
       }
-      /* --- ANIMAÇÃO DE RESPIRAÇÃO (CSS) --- */
-      .circle.animating {
-        animation: breathing 8s ease-in-out infinite;
-      }
-      @keyframes breathing {
-        0% { transform: scale(1); }
-        40% { transform: scale(1.3); }
-        60% { transform: scale(1.3); }
-        90% { transform: scale(0.8); }
-        100% { transform: scale(1); }
-      }
-      .instruction {
-        position: absolute;
-        width: 100%;
-        text-align: center;
-        font-size: 1.5rem;
-        margin-top: 200px;
-        color: #222;
-        font-weight: bold;
-        letter-spacing: 1px;
-      }
+
       .btn-row {
-        display: flex;
-        justify-content: center;
-        gap: 32px;
-        margin-bottom: 24px;
-        width: 100%;
+        flex-direction: column;
+        gap: 18px;
       }
+
       .btn-circular,
-      .btn-retangular,
-      .btn-escolha {
-        cursor: pointer;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-      .btn-circular {
-        background: #fff;
-        color: #111;
-        border: 2px solid #111;
-        border-radius: 50px;
-        padding: 18px 48px;
-        font-size: 1.3em;
-        box-shadow: none;
-      }
-      .btn-circular:hover {
-        background: #ffeb3b;
-      }
       .btn-retangular {
-        background: #ffeb3b;
-        color: #111;
-        border: 2px solid #ffeb3b;
-        border-radius: 30px;
-        padding: 16px 0;
-        font-size: 1.3em;
         width: 100%;
-        margin-bottom: 28px;
-      }
-      .btn-retangular:hover {
-        background: #e4b827;
-        border-color: #e4b827;
-        color: #fff;
-      }
-      .btn-escolha {
-        display: inline-block;
-        background: #ffffff;
-        color: #111;
-        border: 2px solid #ffeb3b;
-        border-radius: 30px;
-        padding: 10px 24px;
+        padding: 14px 0;
         font-size: 1em;
-        text-decoration: none;
       }
-      .btn-escolha:hover {
-        background: #e4b827;
-        border-color: #e4b827;
-        color: #fff;
-      }
-      .tempo-total {
-        font-size: 1.5em;
-        color: #111;
-        margin-top: 10px;
-        text-align: center;
-        letter-spacing: 2px;
-      }
-      p {
-        background: #fffde7;
-        border-radius: 16px;
-        padding: 10px 20px;
-        max-width: 480px;
-        text-align: left;
-        margin-bottom: 16px;
-      }
-      @media (max-width: 700px) {
-        .ex-box {
-          max-width: 98vw;
-        }
-        .circle {
-          width: 120px;
-          height: 120px;
-        }
-        .btn-row {
-          flex-direction: column;
-          gap: 18px;
-        }
-        .btn-circular,
-        .btn-retangular {
-          width: 100%;
-          padding: 14px 0;
-          font-size: 1em;
-        }
-      }
-    </style>
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-      <nav class="nav-bar">
-        <h1>RespiraAi</h1>
-        <div class="menu-links">
-          <a href="{{ url_for('index') }}">Exercícios</a>
-          <a href="{{ url_for('historico') }}">Histórico</a>
-          <a href="{{ url_for('index') }}">Estatísticas</a>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <div
-        class="ex-box"
-        data-duracao="{{ exercicio.duracao }}"
-        data-exercicio-id="{{ exercicio.id_exercicio }}"
-      >
-        <strong>{{ exercicio.nome }}</strong>
-        {{ exercicio.descricao|safe }}
-        <div style="position: relative">
-          <div class="circle" id="breathCircle"></div>
-        </div>
-        <div class="btn-row">
-          <button
-            class="btn-circular"
-            id="btnIniciar"
-          >
-            INICIAR
-          </button>
-          <button
-            class="btn-circular"
-            id="btnPausar"
-          >
-            PAUSAR
-          </button>
-        </div>
-        <button
-          class="btn-retangular"
-          id="btnTerminar"
-        >
-          TERMINAR
-        </button>
-        <div class="tempo-total" id="tempoTotal">
-          TEMPO TOTAL:&nbsp;&nbsp;00:00
-        </div>
-      </div>
 
-      <div class="text-center my-4">
-        <a href="{{ url_for('adicionar_exercicio') }}" class="btn btn-warning">
-          Adicionar exercício
+  <header>
+    <nav class="nav-bar">
+
+      <h1>RespiraAi</h1>
+
+      <div class="menu-links">
+
+        <a href="{{ url_for('index') }}">
+          Exercícios
         </a>
+
+        <a href="{{ url_for('historico') }}">
+          Histórico
+        </a>
+
+        <a href="{{ url_for('index') }}#estatisticas">
+          Estatísticas
+        </a>
+
+        {% if session.get('administrador') %}
+
+          <a href="{{ url_for('painel_administrador') }}">
+            Painel administrativo
+          </a>
+
+          <a href="{{ url_for('logout_administrador') }}">
+            Sair
+          </a>
+
+        {% elif session.get('usuario') %}
+
+          <a href="{{ url_for('logout') }}">
+            Sair
+          </a>
+
+        {% endif %}
+
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <div
+      class="ex-box"
+      data-duracao="{{ exercicio.duracao }}"
+      data-exercicio-id="{{ exercicio.id_exercicio }}"
+    >
+
+      <strong>{{ exercicio.nome }}</strong>
+
+      {{ exercicio.descricao|safe }}
+
+      <div style="position: relative">
+        <div class="circle" id="breathCircle"></div>
       </div>
 
-      <hr>
-      <!-- SEÇÃO DE OUTROS EXERCÍCIOS -->
-      <div class="ex-box">
-        <h3>Escolha outro exercício:</h3>
-        {% if exercicios %}
-          <div class="ex-cards-list">
-            {% for ex in exercicios %}
-              {% set is_current = (ex.id_exercicio == exercicio.id_exercicio) %}
-              {% set border_style = 'border-color:#e4b827;' if is_current else '' %}
-              <div class="ex-card">
-                <strong>{{ ex.nome }}</strong>
-                <div class="ex-info">
-                  Duração: {{ ex.duracao }} min
-                </div>
-                <div class="ex-info">
-                  {{ ex.descricao|truncate(60, True, '...') }}
-                </div>
+      <div class="btn-row">
+
+        <button class="btn-circular" id="btnIniciar">
+          INICIAR
+        </button>
+
+        <button class="btn-circular" id="btnPausar">
+          PAUSAR
+        </button>
+
+      </div>
+
+      <button class="btn-retangular" id="btnTerminar">
+        TERMINAR
+      </button>
+
+      <div class="tempo-total" id="tempoTotal">
+        TEMPO TOTAL:&nbsp;&nbsp;00:00
+      </div>
+
+    </div>
+
+    <div class="text-center my-4">
+
+      <a href="{{ url_for('adicionar_exercicio') }}"
+         class="btn btn-warning">
+        Adicionar exercício
+      </a>
+
+    </div>
+
+    <hr>
+
+    <!-- SEÇÃO DE OUTROS EXERCÍCIOS -->
+
+    <div class="ex-box">
+
+      <h3>Escolha outro exercício:</h3>
+
+      {% if exercicios %}
+
+        <div class="ex-cards-list">
+
+          {% for ex in exercicios %}
+
+            {% set is_current = (ex.id_exercicio == exercicio.id_exercicio) %}
+            {% set border_style = 'border-color:#e4b827;' if is_current else '' %}
+
+            <div class="ex-card">
+
+              <strong>{{ ex.nome }}</strong>
+
+              <div class="ex-info">
+                Duração: {{ ex.duracao }} min
+              </div>
+
+              <div class="ex-info">
+                {{ ex.descricao|truncate(60, True, '...') }}
+              </div>
+
+              <a
+                href="{{ url_for('editar_exercicio', id=ex.id_exercicio) }}"
+                class="btn btn-outline-primary"
+              >
+                Editar
+              </a>
+
+              {% if is_current %}
+
+                <span style="color:#e4b827; font-weight:bold;">
+                  Atual
+                </span>
+
+              {% else %}
 
                 <a
-                  href="{{ url_for('editar_exercicio', id=ex.id_exercicio) }}"
-                  class="btn btn-outline-primary"
+                  href="{{ url_for('exibir_exercicio', id=ex.id_exercicio) }}"
+                  class="btn-escolha"
                 >
-                  Editar
+                  ESCOLHER
                 </a>
 
-                {% if is_current %}
-                  <span style="color:#e4b827; font-weight:bold;">
-                    Atual
-                  </span>
-                {% else %}
-                  <a
-                    href="{{ url_for('exibir_exercicio', id=ex.id_exercicio) }}"
-                    class="btn-escolha"
-                  >
-                    ESCOLHER
-                  </a>
-                {% endif %}
-              </div>
-            {% endfor %}
-          </div>
-        {% else %}
-          <p>Nenhum outro exercício encontrado.</p>
-        {% endif %}
-      </div>
-    </main>
+              {% endif %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            </div>
 
-    <!-- SCRIPT PARA CONTROLAR A ANIMAÇÃO -->
-    <script>
-      const circle = document.getElementById("breathCircle");
-      const startBtn = document.getElementById("btnIniciar");
-      const pauseBtn = document.getElementById("btnPausar");
-      const terminateBtn = document.getElementById("btnTerminar");
+          {% endfor %}
 
-      function startBreathing() {
-        circle.classList.add("animating");
-      }
+        </div>
 
-      function stopBreathing() {
-        circle.classList.remove("animating");
-      }
+      {% else %}
 
-      startBtn.addEventListener("click", startBreathing);
-      pauseBtn.addEventListener("click", stopBreathing);
-      terminateBtn.addEventListener("click", stopBreathing);
-    </script>
+        <p>Nenhum outro exercício encontrado.</p>
 
-    <!-- Seu script principal para o cronômetro -->
-    <script src="{{ url_for('static', filename='js/ex.js') }}"></script>
+      {% endif %}
+
+    </div>
+
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SCRIPT PARA CONTROLAR A ANIMAÇÃO -->
+  <script>
+
+    const circle = document.getElementById("breathCircle");
+    const startBtn = document.getElementById("btnIniciar");
+    const pauseBtn = document.getElementById("btnPausar");
+    const terminateBtn = document.getElementById("btnTerminar");
+
+    function startBreathing() {
+      circle.classList.add("animating");
+    }
+
+    function stopBreathing() {
+      circle.classList.remove("animating");
+    }
+
+    startBtn.addEventListener("click", startBreathing);
+    pauseBtn.addEventListener("click", stopBreathing);
+    terminateBtn.addEventListener("click", stopBreathing);
+
+  </script>
+
+  <!-- SCRIPT PRINCIPAL DO CRONÔMETRO -->
+  <script src="{{ url_for('static', filename='js/ex.js') }}"></script>
+
 </body>
 </html>
-
