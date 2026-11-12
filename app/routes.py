@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from app.models import Exercicio, Pratica, Usuario
 from app.services.AuthenticationService import AuthenticationService
-
+from app.models import Administrador,Exercicio, Pratica, Usuario
 @app.route("/")
 def index():
     usuario_atual = session.get("usuario")
@@ -249,3 +249,264 @@ def exibir_exercicio(id):
         exercicio=exercicio,
         exercicios=exercicios,
     )
+
+@app.route("/exercicio/adicionar", methods=["GET", "POST"])
+def adicionar_exercicio():
+    # Exige que o usuário esteja logado
+    if not session.get("usuario"):
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        nome = (request.form.get("nome") or "").strip()
+        descricao = (request.form.get("descricao") or "").strip()
+        duracao_texto = (request.form.get("duracao") or "").strip()
+
+        # Validação básica
+        if not nome or not descricao or not duracao_texto:
+            flash("Preencha todos os campos.")
+            return render_template(
+                "adicionar_exercicio.html",
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=False,
+            )
+
+        try:
+            duracao = int(duracao_texto)
+            if duracao <= 0:
+                raise ValueError
+        except ValueError:
+            flash("A duração deve ser um número inteiro maior que zero.")
+            return render_template(
+                "adicionar_exercicio.html",
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=False,
+            )
+
+        try:
+            exercicio = Exercicio(
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao,
+            )
+            db.session.add(exercicio)
+            db.session.commit()
+            flash("Exercício cadastrado com sucesso!")
+            return redirect(
+                url_for("exibir_exercicio", id=exercicio.id_exercicio)
+            )
+        except SQLAlchemyError:
+            db.session.rollback()
+            app.logger.exception("Erro ao cadastrar exercício")
+            flash("Não foi possível cadastrar o exercício.")
+            return render_template(
+                "adicionar_exercicio.html",
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=False,
+            )
+
+    return render_template("adicionar_exercicio.html", editar=False)
+
+
+@app.route("/exercicio/<int:id>/editar", methods=["GET", "POST"])
+def editar_exercicio(id):
+    # Exige que o usuário esteja logado
+    if not session.get("usuario"):
+        return redirect(url_for("login"))
+
+    exercicio = db.session.get(Exercicio, id)
+
+    if not exercicio:
+        flash("Exercício não encontrado.")
+        return redirect(url_for("lista_exercicios"))
+
+    if request.method == "POST":
+        nome = (request.form.get("nome") or "").strip()
+        descricao = (request.form.get("descricao") or "").strip()
+        duracao_texto = (request.form.get("duracao") or "").strip()
+
+        # Validação básica
+        if not nome or not descricao or not duracao_texto:
+            flash("Preencha todos os campos.")
+            return render_template(
+                "adicionar_exercicio.html",
+                exercicio=exercicio,
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=True,
+            )
+
+        try:
+            duracao = int(duracao_texto)
+            if duracao <= 0:
+                raise ValueError
+        except ValueError:
+            flash("A duração deve ser um número inteiro maior que zero.")
+            return render_template(
+                "adicionar_exercicio.html",
+                exercicio=exercicio,
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=True,
+            )
+
+        try:
+            exercicio.nome = nome
+            exercicio.descricao = descricao
+            exercicio.duracao = duracao
+            db.session.commit()
+            flash("Exercício atualizado com sucesso!")
+            return redirect(url_for("exibir_exercicio", id=exercicio.id_exercicio))
+        except SQLAlchemyError:
+            db.session.rollback()
+            app.logger.exception("Erro ao atualizar exercício")
+            flash("Não foi possível atualizar o exercício.")
+            return render_template(
+                "adicionar_exercicio.html",
+                exercicio=exercicio,
+                nome=nome,
+                descricao=descricao,
+                duracao=duracao_texto,
+                editar=True,
+            )
+
+    return render_template(
+        "adicionar_exercicio.html",
+        exercicio=exercicio,
+        editar=True,
+    )
+
+@app.route("/administrador/login", methods=["GET", "POST"])
+def login_administrador():
+    if request.method == "GET":
+        return render_template("login_administrador.html")
+
+    email = (request.form.get("email") or "").strip()
+    senha = request.form.get("senha") or ""
+
+    administrador = db.session.scalar(
+        select(Administrador).where(
+            Administrador.email == email,
+            Administrador.senha == senha,
+        )
+    )
+
+    if not administrador:
+        return render_template(
+            "login_administrador.html",
+            erro="E-mail ou senha incorretos.",
+        )
+
+    # Limpa eventual sessão de usuário comum: os acessos ficam separados.
+    session.pop("usuario", None)
+    session["administrador"] = administrador.email
+
+    return redirect(url_for("painel_administrador"))
+
+
+@app.route("/administrador/cadastro", methods=["GET", "POST"])
+def cadastro_administrador():
+    if request.method == "GET":
+        return render_template("cadastro_administrador.html")
+
+    nome = (request.form.get("nome") or "").strip()
+    email = (request.form.get("email") or "").strip()
+    senha = request.form.get("senha") or ""
+
+    if not nome or not email or not senha:
+        return render_template(
+            "cadastro_administrador.html",
+            erro="Preencha todos os campos.",
+        )
+
+    administrador_existente = db.session.scalar(
+        select(Administrador).where(Administrador.email == email)
+    )
+
+    if administrador_existente:
+        return render_template(
+            "cadastro_administrador.html",
+            erro="Esse e-mail já está cadastrado como administrador.",
+        )
+
+    try:
+        administrador = Administrador(
+            nome=nome,
+            email=email,
+            senha=senha,
+        )
+        db.session.add(administrador)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        app.logger.exception("Erro ao cadastrar administrador")
+        return render_template(
+            "cadastro_administrador.html",
+            erro="Não foi possível cadastrar o administrador.",
+        )
+
+    flash("Cadastro realizado. Entre com seu e-mail e senha.")
+    return redirect(url_for("login_administrador"))
+
+
+@app.route("/administrador/painel")
+def painel_administrador():
+    if not session.get("administrador"):
+        return redirect(url_for("login_administrador"))
+
+    usuarios = db.session.scalars(
+        select(Usuario).order_by(Usuario.id.asc())
+    ).all()
+
+    return render_template(
+        "painel_administrador.html",
+        usuarios=usuarios,
+        administrador=session["administrador"],
+    )
+
+
+@app.route("/administrador/usuario/<int:id>/excluir", methods=["POST"])
+def excluir_usuario(id):
+    if not session.get("administrador"):
+        return redirect(url_for("login_administrador"))
+
+    usuario = db.session.get(Usuario, id)
+
+    if not usuario:
+        flash("Usuário não encontrado.")
+        return redirect(url_for("painel_administrador"))
+
+    try:
+        # Remove primeiro as práticas ligadas ao usuário, para evitar
+        # violação da chave estrangeira.
+        praticas = db.session.scalars(
+            select(Pratica).where(Pratica.id_usuario == usuario.id)
+        ).all()
+
+        for pratica in praticas:
+            db.session.delete(pratica)
+
+        db.session.delete(usuario)
+        db.session.commit()
+        flash("Usuário e seus registros de prática foram excluídos.")
+    except SQLAlchemyError:
+        db.session.rollback()
+        app.logger.exception("Erro ao excluir usuário")
+        flash("Não foi possível excluir o usuário.")
+
+    return redirect(url_for("painel_administrador"))
+
+
+@app.route("/administrador/logout")
+def logout_administrador():
+    session.pop("administrador", None)
+    return redirect(url_for("login_administrador"))
+
+
