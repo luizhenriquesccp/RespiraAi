@@ -20,13 +20,13 @@
             <ul class="navbar-nav ms-auto">
               
           <li class="nav-item menu-links">
-          <a class="nav-link fs-5 px-3" href="#card">Exercícios</a>
+          <a class="nav-link fs-5 px-3" href="{{ url_for('index') }}#card">Exercícios</a>
            </li>
               <li class="nav-item">
                 <a class="nav-link fs-5 px-3" href="{{ url_for('historico') }}">Histórico</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link fs-5 px-3" href="#estatisticas">Estatísticas</a>
+                <a class="nav-link fs-5 px-3" href="{{ url_for('index') }}#estatisticas">Estatísticas</a>
               </li>
           {% if not usuario %}
           <li class="nav-item">
