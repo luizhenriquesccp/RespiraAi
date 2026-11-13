@@ -28,15 +28,27 @@
               <li class="nav-item">
                 <a class="nav-link fs-5 px-3" href="{{ url_for('index') }}#estatisticas">Estatísticas</a>
               </li>
-          {% if not usuario %}
+          {% if session.get('administrador') %}
+              <li class="nav-item">
+                <span class="nav-link fs-5 px-3 fw-bold">Administrador</span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fs-5 px-3" href="{{ url_for('painel_administrador') }}">Painel</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fs-5 px-3 text-danger" href="{{ url_for('logout_administrador') }}">Sair</a>
+              </li>
+          {% elif session.get('usuario') %}
+              <li class="nav-item">
+                <span class="nav-link fs-5 px-3">Usuário</span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fs-5 px-3 text-danger" href="{{ url_for('logout') }}" style="margin-left: 10px">Sair</a>
+              </li>
+          {% else %}
           <li class="nav-item">
                 <a class="nav-link fs-5 px-3" href="{{ url_for('login') }}">Entrar</a>
               </li>
-              {% endif %}
-              {% if usuario %}
-              <li class="nav-item">
-                <a class="nav-link fs-5 px-3 text-danger" href="{{ url_for('logout') }}" style="margin-left: 10px">Sair</a>
-          </li>
           {% endif %}
             </ul>
             </div>

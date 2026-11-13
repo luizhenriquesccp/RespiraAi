@@ -4,13 +4,19 @@
 
 {% block content %}
       <div class="hero bg-light p-5 rounded-4 mb-5">
-        <span class="badge text-bg-success mb-3">Perfil: usuário</span>
+        <span class="badge {% if perfil == 'administrador' %}text-bg-dark{% else %}text-bg-success{% endif %} mb-3">Perfil: {{ perfil }}</span>
         <h2 class="display-5 fw-bold mb-4">Bem-vindo ao RespiraAi!</h2>
+        {% if perfil == 'administrador' %}
+        <p class="lead mb-4">
+          Acesse os exercícios, consulte o histórico geral e gerencie usuários pelo painel administrativo.
+        </p>
+        {% else %}
         <p class="lead mb-4">
           Aqui você encontra exercícios de respiração, histórico das suas
           atividades e estatísticas do seu progresso, {{ usuario.nome }}, tudo para melhorar seu
           bem-estar.
         </p>
+        {% endif %}
         <ul class="list-group list-group-flush bg-transparent mb-4">
           <li class="list-group-item bg-transparent border-0 ps-0">✓Descubra técnicas de respiração para relaxamento e foco.</li>
           <li class="list-group-item bg-transparent border-0 ps-0">✓Acompanhe seu desempenho semanal e veja sua evolução.</li>
@@ -27,22 +33,32 @@
             <div class="card-body">
           <h4 class="card-title h2 fw-bold mb-3">Exercícios</h4>
         <p class="card-text mb-4">
+          {% if perfil == 'administrador' %}
+          Consulte e gerencie os exercícios de respiração disponíveis.
+          {% else %}
           Encontre uma variedade de exercícios de respiração para melhorar seu
           bem-estar, {{ usuario.nome }}.
+          {% endif %}
         </p>
-        <a href="{{ url_for('lista_exercicios') }}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold shadow-sm">COMEÇAR</a>
+        <a href="{{ url_for('lista_exercicios') }}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold shadow-sm">{% if perfil == 'administrador' %}VER EXERCÍCIOS{% else %}COMEÇAR{% endif %}</a>
       </div>
       </section>
       </div>
        <div class="col-md-6">
       <section class="cards h-100 border-0 shadow-sm bg-warning-subtle p-4 text-center" id="estatisticas">
         <div class="card-body"></div>
+        {% if perfil == 'administrador' %}
+        <h4 class="card-title h2 fw-bold mb-3">Administração</h4>
+        <p>Gerencie usuários e acompanhe as atividades pelo painel administrativo.</p>
+        <a href="{{ url_for('painel_administrador') }}" class="btn btn-dark">Abrir painel</a>
+        {% else %}
         <h4 class="card-title h2 fw-bold mb-3">Estatísticas da Semana</h4>
          <div class="card-text fs-5">
         <p class="mb-2"><strong>Total de minutos:</strong> {{ estatisticas.totalMinutos }}</p>
         <p class="mb-2"><strong>Práticas realizadas:</strong> {{ estatisticas.qtdPraticas }}</p>
         <p class="mb-0"><strong>Média por prática:</strong> {{ estatisticas.media }} min</p>
       </div>
+        {% endif %}
       </div>
       </section>
       </div>

@@ -185,9 +185,11 @@
       </div>
 
       <div class="text-center my-4">
+        {% if session.get('administrador') %}
         <a href="{{ url_for('adicionar_exercicio') }}" class="btn btn-warning">
           Adicionar exercício
         </a>
+        {% endif %}
       </div>
 
       <hr>

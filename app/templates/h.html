@@ -4,7 +4,9 @@
 
 {% block content %}
 
-      <h1 class="display-5 fw-bold mb-4">ÚLTIMAS PRÁTICAS</h1>
+      <h1 class="display-5 fw-bold mb-4">
+        {% if administrador %}HISTÓRICO GERAL DE PRÁTICAS{% else %}ÚLTIMAS PRÁTICAS{% endif %}
+      </h1>
 
       <div class="tabela-praticas-container">
         <table class="tabela-praticas">

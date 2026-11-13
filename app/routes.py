@@ -10,20 +10,31 @@ from app.models import Administrador,Exercicio, Pratica, Usuario
 @app.route("/")
 def index():
     usuario_atual = session.get("usuario")
-    if not usuario_atual:
+    administrador_atual = session.get("administrador")
+    if not usuario_atual and not administrador_atual:
         return redirect(url_for("login"))
 
-    with db.session() as db_session:
-        user = db_session.scalar(
-            select(Usuario).where(Usuario.email == usuario_atual)
+    if usuario_atual:
+        with db.session() as db_session:
+            user = db_session.scalar(
+                select(Usuario).where(Usuario.email == usuario_atual)
+            )
+            if not user:
+                flash("Usuário não encontrado. Faça login novamente.")
+                return redirect(url_for("login"))
+
+            praticas_usuario = db_session.scalars(
+                select(Pratica).where(Pratica.id_usuario == user.id)
+            ).all()
+    else:
+        user = db.session.scalar(
+            select(Administrador).where(
+                Administrador.email == administrador_atual
+            )
         )
         if not user:
-            flash("Usuário não encontrado. Faça login novamente.")
-            return redirect(url_for("login"))
-
-        praticas_usuario = db_session.scalars(
-            select(Pratica).where(Pratica.id_usuario == user.id)
-        ).all()
+            return redirect(url_for("login_administrador"))
+        praticas_usuario = []
 
     total_minutos = sum(pratica.tempo_dedicado or 0 for pratica in praticas_usuario)
     qtd_praticas = len(praticas_usuario)
@@ -33,7 +44,12 @@ def index():
         "qtdPraticas": qtd_praticas,
         "media": round(media, 1),
     }
-    return render_template("index.html", estatisticas=estatisticas, usuario=user)
+    return render_template(
+        "index.html",
+        estatisticas=estatisticas,
+        usuario=user,
+        perfil="administrador" if administrador_atual else "usuário",
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -87,17 +103,20 @@ def cadastro():
 @app.route("/historico")
 def historico():
     usuario_atual = session.get("usuario")
-    if not usuario_atual:
+    administrador_atual = session.get("administrador")
+    if not usuario_atual and not administrador_atual:
         return redirect(url_for("login"))
 
     with db.session() as db_session:
-        praticas = db_session.scalars(
+        consulta = (
             select(Pratica)
             .join(Pratica.usuario)
             .join(Pratica.exercicio)
-            .where(Usuario.email == usuario_atual)
             .order_by(Pratica.data.desc())
-        ).all()
+        )
+        if usuario_atual:
+            consulta = consulta.where(Usuario.email == usuario_atual)
+        praticas = db_session.scalars(consulta).all()
 
         praticas_usuario = [
             {
@@ -108,12 +127,26 @@ def historico():
             for pratica in praticas
         ]
 
-    return render_template("h.html", praticas=praticas_usuario)
+    return render_template(
+        "h.html",
+        praticas=praticas_usuario,
+        administrador=bool(administrador_atual),
+    )
 
 
 @app.route("/salvar_pratica", methods=["POST"])
 def salvar_pratica():
     usuario_atual = session.get("usuario")
+    if session.get("administrador") and not usuario_atual:
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Somente usuários podem salvar práticas.",
+                }
+            ),
+            403,
+        )
     if not usuario_atual:
         return (
             jsonify(
@@ -212,7 +245,7 @@ def logout():
 @app.route("/exercicios")
 def lista_exercicios():
     usuario_atual = session.get("usuario")
-    if not usuario_atual:
+    if not usuario_atual and not session.get("administrador"):
         return redirect(url_for("login"))
 
     with db.session() as db_session:
@@ -232,7 +265,7 @@ def lista_exercicios():
 @app.route("/exercicio/<int:id>")
 def exibir_exercicio(id):
     usuario_atual = session.get("usuario")
-    if not usuario_atual:
+    if not usuario_atual and not session.get("administrador"):
         return redirect(url_for("login"))
 
     with db.session() as db_session:
