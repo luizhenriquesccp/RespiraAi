@@ -9,6 +9,10 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 
+from app.services.AuthorizationService import verificar_autorizacao
+
+app.before_request(verificar_autorizacao)
+
 from app import routes, models
 from app.seed import seed_exercicios
 

@@ -47,6 +47,7 @@ def login():
         user = AuthenticationService.login(db_session, email, senha)
 
     if user:
+        session.pop("administrador", None)
         session["usuario"] = user.email
         return redirect(url_for("index"))
 
@@ -252,10 +253,6 @@ def exibir_exercicio(id):
 
 @app.route("/exercicio/adicionar", methods=["GET", "POST"])
 def adicionar_exercicio():
-    # Exige que o usuário esteja logado
-    if not session.get("usuario"):
-        return redirect(url_for("login"))
-
     if request.method == "POST":
         nome = (request.form.get("nome") or "").strip()
         descricao = (request.form.get("descricao") or "").strip()
@@ -315,10 +312,6 @@ def adicionar_exercicio():
 
 @app.route("/exercicio/<int:id>/editar", methods=["GET", "POST"])
 def editar_exercicio(id):
-    # Exige que o usuário esteja logado
-    if not session.get("usuario"):
-        return redirect(url_for("login"))
-
     exercicio = db.session.get(Exercicio, id)
 
     if not exercicio:
@@ -458,9 +451,6 @@ def cadastro_administrador():
 
 @app.route("/administrador/painel")
 def painel_administrador():
-    if not session.get("administrador"):
-        return redirect(url_for("login_administrador"))
-
     usuarios = db.session.scalars(
         select(Usuario).order_by(Usuario.id.asc())
     ).all()
@@ -474,9 +464,6 @@ def painel_administrador():
 
 @app.route("/administrador/usuario/<int:id>/excluir", methods=["POST"])
 def excluir_usuario(id):
-    if not session.get("administrador"):
-        return redirect(url_for("login_administrador"))
-
     usuario = db.session.get(Usuario, id)
 
     if not usuario:
