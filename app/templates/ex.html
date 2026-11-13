@@ -208,12 +208,14 @@
                   {{ ex.descricao|truncate(60, True, '...') }}
                 </div>
 
-                <a
-                  href="{{ url_for('editar_exercicio', id=ex.id_exercicio) }}"
-                  class="btn btn-outline-primary"
-                >
-                  Editar
-                </a>
+                {% if session.get('administrador') %}
+                  <a
+                    href="{{ url_for('editar_exercicio', id=ex.id_exercicio) }}"
+                    class="btn btn-outline-primary"
+                  >
+                    Editar
+                  </a>
+                {% endif %}
 
                 {% if is_current %}
                   <span style="color:#e4b827; font-weight:bold;">
