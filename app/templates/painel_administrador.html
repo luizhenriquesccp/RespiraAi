@@ -1,190 +1,65 @@
 {% extends 'base.html' %}
-
-{% block title %}Painel Administrativo{% endblock %}
-
+{% block title %}Usuários cadastrados{% endblock %}
 {% block content %}
 
 <div class="container">
 
-    <!-- Cabeçalho do painel -->
-    <div class="d-flex justify-content-between
-                align-items-center flex-wrap mb-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
 
-        <div>
-            <span class="badge text-bg-dark mb-2">
-                Perfil administrador
-            </span>
-
-            <h1 class="fw-bold">
-                Painel do administrador
-            </h1>
-
-            <p class="text-muted">
-                Conectado como {{ administrador }}
-            </p>
-        </div>
-
-        <a href="{{ url_for('index') }}"
-           class="btn btn-warning rounded-pill px-4">
-            Página inicial
-        </a>
-
-    </div>
-
-
-    <!-- Mensagens do sistema -->
-    {% with mensagens = get_flashed_messages() %}
-
-        {% if mensagens %}
-
-            {% for mensagem in mensagens %}
-
-                <div class="alert alert-info alert-dismissible fade show">
-
-                    {{ mensagem }}
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="alert">
-                    </button>
-
-                </div>
-
-            {% endfor %}
-
-        {% endif %}
-
-    {% endwith %}
-
-
-    <!-- Opções administrativas -->
-    <div class="row g-4 mb-5">
-
-        <div class="col-md-6">
-
-            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-
-                <h4 class="fw-bold">
-                    Gerenciar usuários
-                </h4>
-
-                <p class="text-muted">
-                    Consulte os usuários cadastrados no RespiraAí.
-                </p>
-
-                <a href="#usuarios"
-                   class="btn btn-warning rounded-pill">
-                    Ver usuários
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <div class="col-md-6">
-
-            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-
-                <h4 class="fw-bold">
-                    Histórico de atividades
-                </h4>
-
-                <p class="text-muted">
-                    Acompanhe as práticas realizadas pelos usuários.
-                </p>
-
-                <a href="{{ url_for('historico') }}"
-                   class="btn btn-warning rounded-pill">
-                    Consultar histórico
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- Tabela de usuários -->
-    <div class="card border-0 shadow-sm rounded-4 p-4"
-         id="usuarios">
-
-        <h2 class="h4 fw-bold mb-4">
+        <h2 class="fw-bold mb-4">
             Usuários cadastrados
         </h2>
 
         {% if usuarios %}
 
-            <div class="table-responsive">
+        <div class="table-responsive">
 
-                <table class="table table-striped align-middle">
+            <table class="table align-middle">
 
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
 
-                    <tbody>
+                <tbody>
 
-                        {% for usuario in usuarios %}
+                    {% for usuario in usuarios %}
 
-                            <tr>
+                    <tr>
+                        <td>{{ usuario.id }}</td>
 
-                                <td>{{ usuario.id }}</td>
+                        <td>{{ usuario.nome }}</td>
 
-                                <td>{{ usuario.nome }}</td>
+                        <td>{{ usuario.email }}</td>
 
-                                <td>{{ usuario.email }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('excluir_usuario', id=usuario.id) }}"
+                                onsubmit="return confirm('Tem certeza que deseja excluir este usuário e suas práticas?');">
 
-                                <td>
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                                    <form
-                                        method="POST"
-                                        action="{{ url_for('excluir_usuario', id=usuario.id) }}"
-                                        onsubmit="return confirm('Tem certeza que deseja excluir este usuário e suas práticas?');">
+                                <button type="submit" class="btn btn-danger btn-sm">
 
-                                        <input
-                                            type="hidden"
-                                            name="csrf_token"
-                                            value="{{ csrf_token() }}">
+                                    Excluir usuário
 
-                                        <button
-                                            type="submit"
-                                            class="btn btn-danger btn-sm">
+                                </button>
 
-                                            Excluir usuário
-
-                                        </button>
-
-                                    </form>
-
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
-
-            <p class="text-muted">
-                Não há usuários cadastrados.
-            </p>
-
+        <p class="text-muted">
+            Não há usuários cadastrados.
+        </p>
         {% endif %}
-
-    </div>
-
+     </div>
 </div>
-
 {% endblock %}

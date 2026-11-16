@@ -125,7 +125,7 @@ def cadastro():
 
 @app.route("/historico")
 def historico():
-
+    
     usuario_atual = session.get("usuario")
     administrador_atual = session.get("administrador")
 
@@ -466,7 +466,7 @@ def login_administrador():
     session.pop("usuario", None)
     session["administrador"] = administrador.email
 
-    return redirect(url_for("painel_administrador"))
+    return redirect(url_for("index"))
 
 
 @app.route("/administrador/cadastro", methods=["GET", "POST"])

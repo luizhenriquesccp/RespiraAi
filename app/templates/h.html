@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
-{% block title %}Histórico{% endblock %}
-
+{% block title %}Histórico de atividades{% endblock %}
 {% block content %}
 
 <h1 class="display-5 fw-bold mb-4">
@@ -17,38 +15,51 @@
 
         <thead class="table-light">
             <tr>
+                {% if administrador %}
+                    <th class="py-3 px-4">USUÁRIO</th>
+                {% endif %}
                 <th class="py-3 px-4">DATA</th>
-                <th class="py-3 px-4">EXERCÍCIOS</th>
+                <th class="py-3 px-4">EXERCÍCIO</th>
                 <th class="py-3 px-4">TEMPO</th>
             </tr>
         </thead>
 
         <tbody>
             {% for pratica in praticas %}
-                <tr>
-                    <td class="py-3 px-4 align-middle">
-                        {{ pratica.data }}
-                    </td>
+            <tr>
 
+                {% if administrador %}
                     <td class="py-3 px-4 align-middle">
-                        {{ pratica.exercicio }}
+                        <strong>{{ pratica.nome_usuario }}</strong>
+                        <br>
+                        <small>{{ pratica.email_usuario }}</small>
                     </td>
+                {% endif %}
+                <td class="py-3 px-4 align-middle">
+                    {{ pratica.data.strftime('%d/%m/%Y %H:%M') if pratica.data else '-' }}
+                </td>
 
-                    <td class="py-3 px-4 align-middle">
-                        {{ pratica.tempo_dedicado }} min
-                    </td>
-                </tr>
+                <td class="py-3 px-4 align-middle">
+                    {{ pratica.exercicio }}
+                </td>
 
+                <td class="py-3 px-4 align-middle">
+                    {{ pratica.tempo_dedicado }} min
+                </td>
+
+            </tr>
             {% else %}
-                <tr>
-                    <td colspan="3" class="text-center py-3">
-                        Nenhuma prática registrada.
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="{{ 4 if administrador else 3 }}"
+                    class="text-center py-4">
+                    Nenhuma prática registrada.
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
 
     </table>
+
 </div>
 
 {% endblock %}
