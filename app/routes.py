@@ -8,42 +8,65 @@ from app.models import Exercicio, Pratica, Usuario
 from app.services.AuthenticationService import AuthenticationService
 from app.models import Administrador,Exercicio, Pratica, Usuario
 @app.route("/")
+@app.route("/")
 def index():
     usuario_atual = session.get("usuario")
     administrador_atual = session.get("administrador")
+
     if not usuario_atual and not administrador_atual:
         return redirect(url_for("login"))
 
-    if usuario_atual:
-        with db.session() as db_session:
+    with db.session() as db_session:
+
+        if usuario_atual:
             user = db_session.scalar(
-                select(Usuario).where(Usuario.email == usuario_atual)
+                select(Usuario).where(
+                    Usuario.email == usuario_atual
+                )
             )
+
             if not user:
-                flash("Usuário não encontrado. Faça login novamente.")
                 return redirect(url_for("login"))
 
             praticas_usuario = db_session.scalars(
-                select(Pratica).where(Pratica.id_usuario == user.id)
+                select(Pratica).where(
+                    Pratica.id_usuario == user.id
+                )
             ).all()
-    else:
-        user = db.session.scalar(
-            select(Administrador).where(
-                Administrador.email == administrador_atual
-            )
-        )
-        if not user:
-            return redirect(url_for("login_administrador"))
-        praticas_usuario = []
 
-    total_minutos = sum(pratica.tempo_dedicado or 0 for pratica in praticas_usuario)
+        else:
+            user = db_session.scalar(
+                select(Administrador).where(
+                    Administrador.email == administrador_atual
+                )
+            )
+
+            if not user:
+                return redirect(url_for("login_administrador"))
+
+            # Administrador visualiza as estatísticas gerais
+            praticas_usuario = db_session.scalars(
+                select(Pratica)
+            ).all()
+
+    total_minutos = sum(
+        pratica.tempo_dedicado or 0
+        for pratica in praticas_usuario
+    )
+
     qtd_praticas = len(praticas_usuario)
-    media = total_minutos / qtd_praticas if qtd_praticas > 0 else 0
+
+    media = (
+        total_minutos / qtd_praticas
+        if qtd_praticas > 0 else 0
+    )
+
     estatisticas = {
         "totalMinutos": round(total_minutos, 1),
         "qtdPraticas": qtd_praticas,
         "media": round(media, 1),
     }
+
     return render_template(
         "index.html",
         estatisticas=estatisticas,
@@ -102,27 +125,36 @@ def cadastro():
 
 @app.route("/historico")
 def historico():
+
     usuario_atual = session.get("usuario")
     administrador_atual = session.get("administrador")
+
     if not usuario_atual and not administrador_atual:
         return redirect(url_for("login"))
 
     with db.session() as db_session:
+
         consulta = (
             select(Pratica)
             .join(Pratica.usuario)
             .join(Pratica.exercicio)
             .order_by(Pratica.data.desc())
         )
+
         if usuario_atual:
-            consulta = consulta.where(Usuario.email == usuario_atual)
+            consulta = consulta.where(
+                Usuario.email == usuario_atual
+            )
+
         praticas = db_session.scalars(consulta).all()
 
         praticas_usuario = [
             {
                 "data": pratica.data,
                 "tempo_dedicado": pratica.tempo_dedicado,
-                "exercicio": pratica.exercicio.nome if pratica.exercicio else None,
+                "exercicio": pratica.exercicio.nome,
+                "nome_usuario": pratica.usuario.nome,
+                "email_usuario": pratica.usuario.email,
             }
             for pratica in praticas
         ]
@@ -484,6 +516,10 @@ def cadastro_administrador():
 
 @app.route("/administrador/painel")
 def painel_administrador():
+
+    if not session.get("administrador"):
+        return redirect(url_for("login_administrador"))
+
     usuarios = db.session.scalars(
         select(Usuario).order_by(Usuario.id.asc())
     ).all()
